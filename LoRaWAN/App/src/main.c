@@ -331,6 +331,11 @@ int main(void)
   while (1)
   {
 
+	if (flags_ble.enable_handler){
+		flags_ble.enable_handler = 0;
+		ble_handler((uint8_t*)&message_ble);					// Aciona o handler para selecionar a mensagem de resposta.
+	}
+
 	if (flags_ble.update_mode){
 
 		//prim = __get_PRIMASK();

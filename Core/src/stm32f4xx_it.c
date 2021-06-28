@@ -245,8 +245,8 @@ void USART1_IRQHandler(void)
 
 
 	HAL_UART_IRQHandler(&huart1);
-//	if(ble_index>sizeof(message_ble))
-//		ble_index=0;
+	if(ble_index>sizeof(message_ble))
+		ble_index=0;
 	message_ble[ble_index] = rx_byte_uart1[0];
 	ble_index++;
 	if(ble_index>2){
@@ -260,7 +260,7 @@ void USART1_IRQHandler(void)
 			{
 				// Sinaliza que chegou uma mensagem válida
 				ble_index = 0;								// Zera o índice para nova mensagem
-				ble_handler((uint8_t*)&message_ble);					// Aciona o handler para selecionar a mensagem de resposta.
+				flags_ble.enable_handler = 1;
 			}
 		}
 	}
