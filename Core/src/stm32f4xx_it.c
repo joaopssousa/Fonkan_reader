@@ -222,10 +222,12 @@ void TIM3_IRQHandler(void)
 			HAL_TIM_Base_Stop_IT(&htim2);
 	}
 
-	if(count_send++ == 5)
-	{
-		flag_send_timeout = SET;
-		count_send = 0;
+	if(flags_ble.start == SET){
+		if(count_send++ == 50)
+		{
+			flag_send_timeout = SET;
+			count_send = 0;
+		}
 	}
 
 
@@ -308,9 +310,12 @@ void USART2_IRQHandler(void)
 	/*
 	 * Testa se recebeu o fim da messagem 0x0D.
 	 */
-	if (message_index > 2) {
-		if ((message[message_index - 2] == 0xd)
-				&& (message[message_index - 1] == 0x0a)) {
+	if (message_index > 3) {
+		if (
+			(message[message_index - 4] == 0x0a)
+			&& (message[message_index - 3] == 0x55)
+			&& (message[message_index - 2] == 0xd)
+			&& (message[message_index - 1] == 0x0a)) {
 			flags_ble.tag = SET;	// Aciona a flag mostrando que recebeu mensagem válida
 
 			// limpa as pendências de interrupção pois o 0x0A seguinte da mensagem é irrelevante
@@ -318,7 +323,7 @@ void USART2_IRQHandler(void)
 			//		HAL_UART_Abort_IT(&huart2); 				// limpa flags de interrupção
 			//		__HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);
 
-			b  = message_handler((uint8_t*)&message, message_index - 1);
+			//b  = message_handler((uint8_t*)&message, message_index - 1);
 		}
 	}
 	HAL_NVIC_ClearPendingIRQ(USART2_IRQn);

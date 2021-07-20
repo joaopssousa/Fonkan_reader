@@ -51,6 +51,7 @@ _Bool flag_lora_joined = RESET;
 int8_t t = 0;
 uint8_t flag_send_to_lora = LORA_RESET;
 Model_TAG  tag_to_lora;
+Model_TAG pack_to_lora[10];
 
 // Tamanho e vetor de dados para usar a serial para testes.
 uint16_t size;
@@ -78,6 +79,8 @@ _Bool delay_flag = RESET;
 char buffer_tag[50];
 #define LOG_FILE "STORE.TXT"
 
+
+uint8_t pack_position = 0;
 //#define SDCARD_IN_USE
 
 
@@ -220,11 +223,11 @@ int size_list(FIL File){
 
 static void mount_sd_card(){
 	if(f_mount(&SDFatFS, (const TCHAR *)&SDPath, 1) != FR_OK)
-	  {
-		  // TODO Acionar flag ou alerta de ausencia de cartão ou erro de montagem
-		  PRINT_SD_CARD(PRINTF("Erro ao montar o cartao\r\n");)
-		 // Error_Handler();
-	  }
+	{
+		// TODO Acionar flag ou alerta de ausencia de cartão ou erro de montagem
+		PRINT_SD_CARD(PRINTF("Erro ao montar o cartao\r\n");)
+		// Error_Handler();
+	}
 }
 
 static void REMOVE_and_OPENAGAIN(const char* arq){
@@ -321,9 +324,9 @@ int main(void)
   PRINTF("MAC_VERSION= %02X.%02X.%02X.%02X\r\n", (uint8_t)(__LORA_MAC_VERSION >> 24), (uint8_t)(__LORA_MAC_VERSION >> 16), (uint8_t)(__LORA_MAC_VERSION >> 8), (uint8_t)__LORA_MAC_VERSION);
 
   /* Configure the Lora Stack*/
-  LORA_Init(&LoRaMainCallbacks, &LoRaParamInit);
+  //LORA_Init(&LoRaMainCallbacks, &LoRaParamInit);
 
-  LORA_Join();
+  //LORA_Join();
 
   //LoraStartTx(TX_ON_TIMER);
   uint32_t prim; //tratar depois as interrupcoes
@@ -353,12 +356,20 @@ int main(void)
 		MX_USART1_UART_Init();
 		HAL_UART_Receive_IT(&huart1, rx_byte_uart1, 1);
 	}
-	if (flags_ble.start == SET)
+
+	if ((flags_ble.start == SET) && (flags_ble.connection == SET))
 	{
+		//flag_send_timeout = RESET;
+
+		if(flags_ble.tag == SET)
+		{
+			b  = message_handler((uint8_t*)&message, message_index - 1);
+			PRINTF("====>  b = %d\r\n", b);
+			flags_ble.tag = RESET;
+		}
 		if (last_TAG >= 0)
 		{
 			// Variavel auxiliar para fazer envios sequenciais das TAGs sem mexer no indice original
-			PRINTF("====>  b = %d\r\n", b);
 			PRINTF("====>   indices: IN: %d LS: %d\r\n", in_use_TAG, last_TAG);
 
 			//	Tratamento de indice
@@ -376,68 +387,88 @@ int main(void)
 			// 	Envio ao app via bluetooth
 			if(in_use_TAG>=0)
 			{
-				flag_send_timeout = RESET;
-				count_send = 0;
-				while(1)		// Pode ser um problema. Averiguar se a interrupção ainda é vista dentro do loop
-				{
-					HAL_UART_Transmit(&huart1, (uint8_t*) store_TAG[in_use_TAG].N_TAG, TAG_SIZE-1, 1000);
-					HAL_Delay(TIMEOUT_BETWEEN_RESEND_TAG);
+//				count_send = 0;
+//				while(1)		// Pode ser um problema. Averiguar se a interrupção ainda é vista dentro do loop
+//				{
 
-					// Saída em caso de: confirmação, quebra de conexão, fim de manejo ou timeout de 500ms(definido em stm32f4xx_it.c)
-					if(flags_ble.confirm == SET || flags_ble.connection == RESET || flags_ble.start == RESET || flag_send_timeout == SET )  // falta implementar a saída por timeout
-					{
-						flag_send_timeout = RESET;
-						PRINTF("Time: "); PRINTNOW(); //PRINTF("\n");
-						if(flags_ble.confirm == SET){
-							PRINTF("\n Saiu pela confirmacao do app. \n");
-							flags_ble.confirm = RESET;
-						}
-						else if(flag_send_timeout == SET)
-							PRINTF("\n Saiu por estouro do timeout \n");
-						else if(flags_ble.connection == RESET)
-							PRINTF("\n Saiu por quebra de conexão \n");
-						else
-							PRINTF("\n Saiu por fim de manejo \n");
-						break;
-					}
-				}
+					//sendTagtoBle((uint8_t*) &store_TAG[in_use_TAG].N_TAG);
+				HAL_UART_Transmit(&huart1, (uint8_t*) store_TAG[in_use_TAG].N_TAG, TAG_SIZE-1, 1000);
+				HAL_Delay(TIMEOUT_BETWEEN_RESEND_TAG);
 
-				memcpy(tag_to_lora.N_TAG, store_TAG[in_use_TAG].N_TAG, TAG_SIZE);
-				if (in_use_TAG<last_TAG)
+					// Saída em caso de: confirmação, quebra de conexão, fim de manejo ou timeout
+//					if(flags_ble.confirm == SET || flags_ble.connection == RESET || flags_ble.start == RESET || flag_send_timeout == SET )  // falta implementar a saída por timeout
+//					{
+//
+//						PRINTF("Time: "); PRINTNOW(); //PRINTF("\n");
+//						if(flags_ble.confirm == SET){
+//							PRINTF("\n Saiu pela confirmacao do app. \n");
+//							flags_ble.confirm = RESET;
+//						}
+//						else if(flag_send_timeout == SET)
+//							PRINTF("\n Saiu por estouro do timeout \n");
+//						else if(flags_ble.connection == RESET)
+//							PRINTF("\n Saiu por quebra de conexão \n");
+//						else
+//							PRINTF("\n Saiu por fim de manejo \n");
+//						flag_send_timeout = RESET;
+//						break;
+//					}
+//				}
+
+				//memcpy(tag_to_lora.N_TAG, store_TAG[in_use_TAG].N_TAG, TAG_SIZE);
+
+				if ((in_use_TAG<last_TAG) && (flags_ble.confirm == SET))
 				{
+					PRINTF("Pack_position = %d \n\r", pack_position);
+					count_send=0;
+					flag_send_timeout = RESET;
+					flag_send_to_lora++;
+					if(pack_position >= sizeof(pack_to_lora))
+						pack_position=0;
+					memcpy(pack_to_lora[pack_position++].N_TAG, store_TAG[in_use_TAG].N_TAG, TAG_SIZE);
 					in_use_TAG++;
 				}
 				else
 				{
+					PRINTF("Saindo de Flag_start \n\r");
 					last_TAG = -1;
+					clear_buffers();
 				}
 
 			}
 
-			flag_send_to_lora = LORA_SET;
-//			flag_confirm = RESET;
-			Send(NULL);
-		}
-		else
-		{
-			last_TAG = EMPTY_QUEUE;// Restaura o identificador ao ponto padrão sem armazenamento
-			clear_buffers();
-			// TODO Procurar um método mais fácil para limpar o armazenamento das TAGs
-		}
 
+			PRINTF("Flag_send_to_lora = %d", flag_send_to_lora);
+//			flag_confirm = RESET;
+			//Send(NULL);
+		}
+//		else
+//		{
+//			last_TAG = EMPTY_QUEUE;// Restaura o identificador ao ponto padrão sem armazenamento
+//			clear_buffers();
+//			// TODO Procurar um método mais fácil para limpar o armazenamento das TAGs
+//		}
+		//flag
 
 	}
-	flags_ble.tag = RESET;
+	//flag_tag = RESET;
+	//flags_ble.tag= RESET;
 
-    if (AppProcessRequest == LORA_SET)
-    {
-      AppProcessRequest = LORA_RESET;
-      if(flag_send_to_lora==LORA_SET){
-    	  flag_send_to_lora = LORA_RESET;
 #define form1
-    	  Send(NULL);
-      }
-    }
+	if (flag_send_timeout == SET)
+	{
+		flag_send_timeout = RESET;
+		if (AppProcessRequest == LORA_SET)
+		{
+			AppProcessRequest = LORA_RESET;
+			if(flag_send_to_lora > 0 ){
+				flag_send_to_lora--;
+			//	Send(NULL);
+				PRINTF("\n Envio pelo tempo configurado \n");
+			}
+		}
+	}
+
     if (LoraMacProcessRequest == LORA_SET)
     {
       LoraMacProcessRequest = LORA_RESET;
@@ -498,7 +529,16 @@ static void Send(void *context)
 
 	//muda_buffer(&AppData, Buffer_to_send); //JP
 	AppData.BuffSize = sizeof(Model_TAG);
-	memcpy(AppData.Buff,&tag_to_lora,sizeof(Model_TAG));
+	//memcpy(AppData.Buff,&tag_to_lora,sizeof(Model_TAG));
+
+	if(pack_position > 0){
+		memcpy(AppData.Buff, &pack_to_lora[--pack_position], sizeof(Model_TAG));
+	}
+	else{
+		char none_msg[] = "1111111111";
+		memcpy(AppData.Buff, &none_msg, sizeof(none_msg));
+	}
+	PRINTF("\n Pack_position = %d \n\r", pack_position);
 
 	HAL_TIM_Base_Stop_IT(&htim2);
 	LORA_send(&AppData, LORAWAN_DEFAULT_CONFIRM_MSG_STATE);
