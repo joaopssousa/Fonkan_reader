@@ -329,7 +329,7 @@ int main(void)
   //LORA_Join();
 
   //LoraStartTx(TX_ON_TIMER);
-  uint32_t prim; //tratar depois as interrupcoes
+  //uint32_t prim; //tratar depois as interrupcoes
   in_use_TAG = EMPTY_QUEUE;
   while (1)
   {
@@ -360,77 +360,65 @@ int main(void)
 	if ((flags_ble.start == SET) && (flags_ble.connection == SET))
 	{
 		//flag_send_timeout = RESET;
+		if(flags_ble.rfid_send_cmd == SET){
+			flags_ble.rfid_send_cmd = RESET;
+			HAL_UART_Transmit(&huart2, (uint8_t *)READ_MULTIPLE_TAG, MSG_MULTI_TAG_SIZE, 50);
+		}
 
 		if(flags_ble.tag == SET)
 		{
-			b  = message_handler((uint8_t*)&message, message_index - 1);
-			PRINTF("====>  b = %d\r\n", b);
+			if(bytes_read_rfid>4)
+				b  = message_handler((uint8_t*)&message, bytes_read_rfid);
+			//PRINTF("====>  b = %d\r\n", b);
 			flags_ble.tag = RESET;
 		}
+
 		if (last_TAG >= 0)
 		{
 			// Variavel auxiliar para fazer envios sequenciais das TAGs sem mexer no indice original
-			PRINTF("====>   indices: IN: %d LS: %d\r\n", in_use_TAG, last_TAG);
+			PRINTF("====> indices: IN: %d LS: %d\r\n", in_use_TAG, last_TAG);
+			if(in_use_TAG<0)
+				in_use_TAG=0;
 
 			//	Tratamento de indice
 			if (last_TAG == 0)
 			{
-				PRINTF("====>   in_use_TAG = 0\r\n");
+				//PRINTF("====>   in_use_TAG = 0\r\n");
 				in_use_TAG = 0;
 			}
 			if (in_use_TAG>last_TAG)
 			{
-				PRINTF("====>   in_use_TAG = last_TAG\r\n");
+				//PRINTF("====>   in_use_TAG = last_TAG\r\n");
 				in_use_TAG = last_TAG;
 			}
 
 			// 	Envio ao app via bluetooth
 			if(in_use_TAG>=0)
 			{
-//				count_send = 0;
-//				while(1)		// Pode ser um problema. Averiguar se a interrupção ainda é vista dentro do loop
-//				{
 
-					//sendTagtoBle((uint8_t*) &store_TAG[in_use_TAG].N_TAG);
+//				PRINTF("%d Brinco: ", in_use_TAG);
+//				for (uint8_t i = 0; i <= TAG_SIZE-1;i++)
+//				{
+//					PRINTF("%X ", (store_TAG[in_use_TAG].N_TAG[i]));
+//				}
+//				PRINTF("\r\n");
 				HAL_UART_Transmit(&huart1, (uint8_t*) store_TAG[in_use_TAG].N_TAG, TAG_SIZE-1, 1000);
 				HAL_Delay(TIMEOUT_BETWEEN_RESEND_TAG);
 
-					// Saída em caso de: confirmação, quebra de conexão, fim de manejo ou timeout
-//					if(flags_ble.confirm == SET || flags_ble.connection == RESET || flags_ble.start == RESET || flag_send_timeout == SET )  // falta implementar a saída por timeout
-//					{
-//
-//						PRINTF("Time: "); PRINTNOW(); //PRINTF("\n");
-//						if(flags_ble.confirm == SET){
-//							PRINTF("\n Saiu pela confirmacao do app. \n");
-//							flags_ble.confirm = RESET;
-//						}
-//						else if(flag_send_timeout == SET)
-//							PRINTF("\n Saiu por estouro do timeout \n");
-//						else if(flags_ble.connection == RESET)
-//							PRINTF("\n Saiu por quebra de conexão \n");
-//						else
-//							PRINTF("\n Saiu por fim de manejo \n");
-//						flag_send_timeout = RESET;
-//						break;
-//					}
-//				}
-
-				//memcpy(tag_to_lora.N_TAG, store_TAG[in_use_TAG].N_TAG, TAG_SIZE);
-
 				if ((in_use_TAG<last_TAG) && (flags_ble.confirm == SET))
 				{
-					PRINTF("Pack_position = %d \n\r", pack_position);
+					PRINTF("NewTag = %d \n\r", pack_position);
 					count_send=0;
 					flag_send_timeout = RESET;
 					flag_send_to_lora++;
-					if(pack_position >= sizeof(pack_to_lora))
+					if(pack_position >= 10)
 						pack_position=0;
 					memcpy(pack_to_lora[pack_position++].N_TAG, store_TAG[in_use_TAG].N_TAG, TAG_SIZE);
 					in_use_TAG++;
 				}
-				else
+				else if (in_use_TAG>=last_TAG)
 				{
-					PRINTF("Saindo de Flag_start \n\r");
+					PRINTF("FilaVazia \n\r");
 					last_TAG = -1;
 					clear_buffers();
 				}
@@ -438,7 +426,7 @@ int main(void)
 			}
 
 
-			PRINTF("Flag_send_to_lora = %d", flag_send_to_lora);
+//			PRINTF("Flag_send_to_lora = %d", flag_send_to_lora);
 //			flag_confirm = RESET;
 			//Send(NULL);
 		}

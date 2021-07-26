@@ -170,22 +170,9 @@ void SysTick_Handler(void)
 
 void TIM2_IRQHandler(void)
 {
-  /* USER CODE BEGIN TIM2_IRQn 0 */
+	flags_ble.rfid_send_cmd = SET;
 
-	/*
-	 * A cada 1 segundo é enviado uma requisição de leitura
-	 * da TAG mais próxima para o módulo RFID.
-	 */
-
-	//HAL_UART_Transmit(&huart2, (uint8_t *)READ_USER_SINGLE_TAG, MSG_USER_8W_SIZE, 50);
-	HAL_UART_Transmit(&huart2, (uint8_t *)READ_MULTIPLE_TAG, MSG_MULTI_TAG_SIZE, 50);
-
-
-
-  /* USER CODE END TIM2_IRQn 0 */
-  HAL_TIM_IRQHandler(&htim2);
-  /* USER CODE BEGIN TIM2_IRQn 1 */
-  /* USER CODE END TIM2_IRQn 1 */
+	HAL_TIM_IRQHandler(&htim2);
 }
 
 /**
@@ -232,11 +219,9 @@ void TIM3_IRQHandler(void)
 
 
  HAL_NVIC_ClearPendingIRQ(TIM3_IRQn); // limpa flags de interrupção
-  /* USER CODE END TIM3_IRQn 0 */
-  HAL_TIM_IRQHandler(&htim3);
-  /* USER CODE BEGIN TIM3_IRQn 1 */
 
-  /* USER CODE END TIM3_IRQn 1 */
+  HAL_TIM_IRQHandler(&htim3);
+
 }
 
 /**
@@ -252,11 +237,6 @@ void USART1_IRQHandler(void)
 	message_ble[ble_index] = rx_byte_uart1[0];
 	ble_index++;
 	if(ble_index>2){
-
-	//*****Comentado por JP****
-	//HAL_NVIC_ClearPendingIRQ(USART1_IRQn);
-	//HAL_UART_Abort_IT(&huart1);
-	//**************************
 		if(message_ble[0] == 0xa){
 			if(message_ble[ble_index-1] == 0xd)
 			{
@@ -266,17 +246,6 @@ void USART1_IRQHandler(void)
 			}
 		}
 	}
-
-//  /* USER CODE BEGIN USART1_IRQn 0 */
-//	HAL_UART_Receive_IT(huart, pData, Size)(&huart1, (uint8_t*)&message_ble[ble_index++], 1, 100);
-//	if(ble_index>2){
-//		if(message_ble[ble_index-1] == 0xd)
-//		{
-//			// Sinaliza que chegou uma mensagem válida
-//			ble_index = 0;								// Zera o índice para nova mensagem
-//			ble_handler(&message_ble);					// Aciona o handler para selecionar a mensagem de resposta.
-//		}
-//	}
 
 	HAL_NVIC_ClearPendingIRQ(USART1_IRQn);
 	HAL_UART_Abort_IT(&huart1);
@@ -310,20 +279,16 @@ void USART2_IRQHandler(void)
 	/*
 	 * Testa se recebeu o fim da messagem 0x0D.
 	 */
-	if (message_index > 3) {
-		if (
-			(message[message_index - 4] == 0x0a)
-			&& (message[message_index - 3] == 0x55)
-			&& (message[message_index - 2] == 0xd)
-			&& (message[message_index - 1] == 0x0a)) {
-			flags_ble.tag = SET;	// Aciona a flag mostrando que recebeu mensagem válida
-
-			// limpa as pendências de interrupção pois o 0x0A seguinte da mensagem é irrelevante
-			//		HAL_NVIC_ClearPendingIRQ(USART2_IRQn);		// Limpa pendências de interrupção ou erro
-			//		HAL_UART_Abort_IT(&huart2); 				// limpa flags de interrupção
-			//		__HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);
-
-			//b  = message_handler((uint8_t*)&message, message_index - 1);
+	if (message_index > 3)
+	{
+		if ((message[message_index - 4] == 0x0A)
+				&& ((message[message_index - 3] == 0x55) || (message[message_index - 3] == 0x58))
+				&& (message[message_index - 2] == 0x0D)
+				&& (message[message_index - 1] == 0x0A))
+		{
+			flags_ble.tag = SET;// Aciona a flag mostrando que recebeu mensagem válida
+			bytes_read_rfid = message_index;
+			message_index=0;
 		}
 	}
 	HAL_NVIC_ClearPendingIRQ(USART2_IRQn);
