@@ -292,6 +292,17 @@ static void REMOVE_FROM_CARD(){
 
 /************* End of Sd card functions *****************/
 
+int count_digits(int n)
+{
+    int counter=0; // variable declaration
+    while(n!=0)
+    {
+        n=n/10;
+        counter++;
+    }
+    return counter;
+}
+
 
 /**
   * @brief  Main program
@@ -300,6 +311,28 @@ static void REMOVE_FROM_CARD(){
   */
 int main(void)
 {
+
+	unsigned long earring_test;
+	char earring_string[10];
+	unsigned int count;
+	for (int i=0; i<STORAGE_SIZE; i++)
+	{
+		memset(&store_TAG[i].N_TAG[0],0x0A, 1);
+		memset(&store_TAG[i].N_TAG[1],0x55, 1);
+		memset(&store_TAG[i].N_TAG[2],0x33, 1);
+		memset(&store_TAG[i].N_TAG[3], 0x30, TAG_SIZE-2);
+		memset(&store_TAG[i].N_TAG[TAG_SIZE-2],0x0D, 1);
+		if (i%2==0){
+			earring_test = 	17+i;
+		}
+		else{
+			earring_test = 500*i;
+		}
+		count=count_digits(earring_test);
+		sprintf(earring_string, "%lu", earring_test);
+		memcpy (&store_TAG[i].N_TAG[(TAG_SIZE-6)-(count)], earring_string, count);
+	}
+	last_TAG = STORAGE_SIZE-1;
 
   flags_ble.all_flags=RESET;
   /* STM32 HAL library initialization*/
@@ -356,22 +389,22 @@ int main(void)
 		MX_USART1_UART_Init();
 		HAL_UART_Receive_IT(&huart1, rx_byte_uart1, 1);
 	}
-
+	HAL_Delay(TIMEOUT_BETWEEN_RESEND_TAG*3);
 	if ((flags_ble.start == SET) && (flags_ble.connection == SET))
 	{
 		//flag_send_timeout = RESET;
-		if(flags_ble.rfid_send_cmd == SET){
-			flags_ble.rfid_send_cmd = RESET;
-			HAL_UART_Transmit(&huart2, (uint8_t *)READ_MULTIPLE_TAG, MSG_MULTI_TAG_SIZE, 50);
-		}
-
-		if(flags_ble.tag == SET)
-		{
-			if(bytes_read_rfid>4)
-				b  = message_handler((uint8_t*)&message, bytes_read_rfid);
-			//PRINTF("====>  b = %d\r\n", b);
-			flags_ble.tag = RESET;
-		}
+//		if(flags_ble.rfid_send_cmd == SET){
+//			flags_ble.rfid_send_cmd = RESET;
+//			HAL_UART_Transmit(&huart2, (uint8_t *)READ_MULTIPLE_TAG, MSG_MULTI_TAG_SIZE, 50);
+//		}
+//
+//		if(flags_ble.tag == SET)
+//		{
+//			if(bytes_read_rfid>4)
+//				b  = message_handler((uint8_t*)&message, bytes_read_rfid);
+//			//PRINTF("====>  b = %d\r\n", b);
+//			flags_ble.tag = RESET;
+//		}
 
 		if (last_TAG >= 0)
 		{
@@ -396,12 +429,12 @@ int main(void)
 			if(in_use_TAG>=0)
 			{
 
-//				PRINTF("%d Brinco: ", in_use_TAG);
-//				for (uint8_t i = 0; i <= TAG_SIZE-1;i++)
-//				{
-//					PRINTF("%X ", (store_TAG[in_use_TAG].N_TAG[i]));
-//				}
-//				PRINTF("\r\n");
+				PRINTF("%d Brinco: ", in_use_TAG);
+				for (uint8_t i = 0; i < TAG_SIZE-1;i++)
+				{
+					PRINTF("%X ", (store_TAG[in_use_TAG].N_TAG[i]));
+				}
+				PRINTF("\r\n");
 				HAL_UART_Transmit(&huart1, (uint8_t*) store_TAG[in_use_TAG].N_TAG, TAG_SIZE-1, 1000);
 				HAL_Delay(TIMEOUT_BETWEEN_RESEND_TAG);
 
