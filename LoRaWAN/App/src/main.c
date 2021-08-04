@@ -42,7 +42,7 @@ TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 
 
-
+#define LEN_QUEUE_OCCPD 50
 
 // Verificação de conexão para envio ao gateway
 _Bool flag_lora_joined = RESET;
@@ -332,7 +332,7 @@ int main(void)
 		sprintf(earring_string, "%lu", earring_test);
 		memcpy (&store_TAG[i].N_TAG[(TAG_SIZE-6)-(count)], earring_string, count);
 	}
-	last_TAG = STORAGE_SIZE-1;
+	last_TAG = LEN_QUEUE_OCCPD-1;
 
   flags_ble.all_flags=RESET;
   /* STM32 HAL library initialization*/
@@ -389,7 +389,7 @@ int main(void)
 		MX_USART1_UART_Init();
 		HAL_UART_Receive_IT(&huart1, rx_byte_uart1, 1);
 	}
-	HAL_Delay(TIMEOUT_BETWEEN_RESEND_TAG*3);
+	HAL_Delay(TIMEOUT_BETWEEN_RESEND_TAG*6);
 	if ((flags_ble.start == SET) && (flags_ble.connection == SET))
 	{
 		//flag_send_timeout = RESET;
@@ -440,6 +440,7 @@ int main(void)
 
 				if ((in_use_TAG<last_TAG) && (flags_ble.confirm == SET))
 				{
+					flags_ble.confirm = RESET;
 					PRINTF("NewTag = %d \n\r", pack_position);
 					count_send=0;
 					flag_send_timeout = RESET;
@@ -452,8 +453,9 @@ int main(void)
 				else if (in_use_TAG>=last_TAG)
 				{
 					PRINTF("FilaVazia \n\r");
-					last_TAG = -1;
-					clear_buffers();
+					last_TAG = LEN_QUEUE_OCCPD-1;
+					//last_TAG = -1;
+					//clear_buffers();
 				}
 
 			}
