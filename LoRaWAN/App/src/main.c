@@ -359,17 +359,18 @@ int main(void)
 
 	if ((flags_ble.start == SET) && (flags_ble.connection == SET))
 	{
-		//flag_send_timeout = RESET;
+
+		//Envia Comando de leitura de brinco
 		if(flags_ble.rfid_send_cmd == SET){
 			flags_ble.rfid_send_cmd = RESET;
 			HAL_UART_Transmit(&huart2, (uint8_t *)READ_MULTIPLE_TAG, MSG_MULTI_TAG_SIZE, 50);
 		}
 
+
 		if(flags_ble.tag == SET)
 		{
 			if(bytes_read_rfid>4)
 				b  = message_handler((uint8_t*)&message, bytes_read_rfid);
-			//PRINTF("====>  b = %d\r\n", b);
 			flags_ble.tag = RESET;
 		}
 
@@ -377,18 +378,18 @@ int main(void)
 		{
 			// Variavel auxiliar para fazer envios sequenciais das TAGs sem mexer no indice original
 			PRINTF("====> indices: IN: %d LS: %d\r\n", in_use_TAG, last_TAG);
+
 			if(in_use_TAG<0)
 				in_use_TAG=0;
 
 			//	Tratamento de indice
 			if (last_TAG == 0)
 			{
-				//PRINTF("====>   in_use_TAG = 0\r\n");
 				in_use_TAG = 0;
 			}
+
 			if (in_use_TAG>last_TAG)
 			{
-				//PRINTF("====>   in_use_TAG = last_TAG\r\n");
 				in_use_TAG = last_TAG;
 			}
 
@@ -405,8 +406,10 @@ int main(void)
 				HAL_UART_Transmit(&huart1, (uint8_t*) store_TAG[in_use_TAG].N_TAG, TAG_SIZE-1, 1000);
 				HAL_Delay(TIMEOUT_BETWEEN_RESEND_TAG);
 
+
 				if ((in_use_TAG<last_TAG) && (flags_ble.confirm == SET))
 				{
+					flags_ble.confirm = RESET;
 					PRINTF("NewTag = %d \n\r", pack_position);
 					count_send=0;
 					flag_send_timeout = RESET;
@@ -419,7 +422,6 @@ int main(void)
 				else if (in_use_TAG>=last_TAG)
 				{
 					PRINTF("FilaVazia \n\r");
-					last_TAG = -1;
 					clear_buffers();
 				}
 
@@ -436,11 +438,10 @@ int main(void)
 //			clear_buffers();
 //			// TODO Procurar um método mais fácil para limpar o armazenamento das TAGs
 //		}
-		//flag
+
 
 	}
-	//flag_tag = RESET;
-	//flags_ble.tag= RESET;
+
 
 #define form1
 	if (flag_send_timeout == SET)

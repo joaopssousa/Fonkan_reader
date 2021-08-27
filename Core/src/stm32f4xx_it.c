@@ -218,9 +218,9 @@ void TIM3_IRQHandler(void)
 	}
 
 
- HAL_NVIC_ClearPendingIRQ(TIM3_IRQn); // limpa flags de interrupção
+	HAL_NVIC_ClearPendingIRQ(TIM3_IRQn); // limpa flags de interrupção
 
-  HAL_TIM_IRQHandler(&htim3);
+	HAL_TIM_IRQHandler(&htim3);
 
 }
 
