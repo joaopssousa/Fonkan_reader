@@ -35,6 +35,7 @@
 #define DEBUG_SD 1
 #define PRINT_SD_CARD(X) do{ if(DEBUG_SD>0) { X } }while(0);
 
+#define DISABLE_LORA 0
 
 /* Variaveis curral */
 
@@ -324,13 +325,18 @@ int main(void)
   PRINTF("MAC_VERSION= %02X.%02X.%02X.%02X\r\n", (uint8_t)(__LORA_MAC_VERSION >> 24), (uint8_t)(__LORA_MAC_VERSION >> 16), (uint8_t)(__LORA_MAC_VERSION >> 8), (uint8_t)__LORA_MAC_VERSION);
 
   /* Configure the Lora Stack*/
-  //LORA_Init(&LoRaMainCallbacks, &LoRaParamInit);
+#if DISABLE_LORA == 0
 
-  //LORA_Join();
+  LORA_Init(&LoRaMainCallbacks, &LoRaParamInit);
 
-  //LoraStartTx(TX_ON_TIMER);
-  //uint32_t prim; //tratar depois as interrupcoes
+  LORA_Join();
+
+  LoraStartTx(TX_ON_TIMER);
+
+#endif
+
   in_use_TAG = EMPTY_QUEUE;
+
   while (1)
   {
 
@@ -351,7 +357,6 @@ int main(void)
 		COM_Init();
 		HAL_Delay(1);
 		COM_Flush();
-		//HAL_Delay(1);
 		FW_UPDATE_Run();
 		MX_USART1_UART_Init();
 		HAL_UART_Receive_IT(&huart1, rx_byte_uart1, 1);
@@ -379,14 +384,8 @@ int main(void)
 			// Variavel auxiliar para fazer envios sequenciais das TAGs sem mexer no indice original
 			PRINTF("====> indices: IN: %d LS: %d\r\n", in_use_TAG, last_TAG);
 
-			if(in_use_TAG<0)
+			if((in_use_TAG<0) || (last_TAG == 0))
 				in_use_TAG=0;
-
-			//	Tratamento de indice
-			if (last_TAG == 0)
-			{
-				in_use_TAG = 0;
-			}
 
 			if (in_use_TAG>last_TAG)
 			{
@@ -397,12 +396,15 @@ int main(void)
 			if(in_use_TAG>=0)
 			{
 
+//######### DEBUG ################
 //				PRINTF("%d Brinco: ", in_use_TAG);
 //				for (uint8_t i = 0; i <= TAG_SIZE-1;i++)
 //				{
 //					PRINTF("%X ", (store_TAG[in_use_TAG].N_TAG[i]));
 //				}
 //				PRINTF("\r\n");
+//################################
+
 				HAL_UART_Transmit(&huart1, (uint8_t*) store_TAG[in_use_TAG].N_TAG, TAG_SIZE-1, 1000);
 				HAL_Delay(TIMEOUT_BETWEEN_RESEND_TAG);
 
@@ -621,22 +623,6 @@ static void LORA_RxData(lora_AppData_t *AppData)
         }
       }
       break;
-//    case LPP_APP_PORT:
-//    {
-//      AppLedStateOn = (AppData->Buff[2] == 100) ?  0x01 : 0x00;
-//      if (AppLedStateOn == RESET)
-//      {
-//        PRINTF("LED OFF\n\r");
-//        LED_Off(LED_BLUE) ;
-//
-//      }
-//      else
-//      {
-//        PRINTF("LED ON\n\r");
-//        LED_On(LED_BLUE) ;
-//      }
-//      break;
-//    }
     default:
       break;
   }
@@ -713,4 +699,3 @@ uint8_t LORA_GetBatteryLevel(void)
 }
 
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
