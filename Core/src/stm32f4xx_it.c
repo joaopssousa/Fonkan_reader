@@ -210,6 +210,7 @@ void TIM3_IRQHandler(void)
 	}
 
 	if(flags_ble.start == SET){
+		//Flag count to send data via lora
 		if(count_send++ == 50)
 		{
 			flag_send_timeout = SET;

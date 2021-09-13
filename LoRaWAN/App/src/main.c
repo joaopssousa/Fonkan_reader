@@ -35,7 +35,7 @@
 #define DEBUG_SD 1
 #define PRINT_SD_CARD(X) do{ if(DEBUG_SD>0) { X } }while(0);
 
-#define DISABLE_LORA 0
+#define DISABLE_LORA 1
 
 /* Variaveis curral */
 
@@ -362,7 +362,7 @@ int main(void)
 		HAL_UART_Receive_IT(&huart1, rx_byte_uart1, 1);
 	}
 
-	if ((flags_ble.start == SET) && (flags_ble.connection == SET))
+	if (flags_ble.start == SET)
 	{
 
 		//Envia Comando de leitura de brinco
@@ -384,8 +384,20 @@ int main(void)
 			// Variavel auxiliar para fazer envios sequenciais das TAGs sem mexer no indice original
 			PRINTF("====> indices: IN: %d LS: %d\r\n", in_use_TAG, last_TAG);
 
-			if((in_use_TAG<0) || (last_TAG == 0))
+			if ( (in_use_TAG<0) || (last_TAG == 0) )
+			{
 				in_use_TAG=0;
+			}
+
+			if ( pack_position < 0 || last_TAG == 0)
+			{
+				pack_position=0;
+			}
+
+			if (pack_position > last_TAG)
+			{
+				pack_position = last_TAG;
+			}
 
 			if (in_use_TAG>last_TAG)
 			{
@@ -405,20 +417,24 @@ int main(void)
 //				PRINTF("\r\n");
 //################################
 
-				HAL_UART_Transmit(&huart1, (uint8_t*) store_TAG[in_use_TAG].N_TAG, TAG_SIZE-1, 1000);
-				HAL_Delay(TIMEOUT_BETWEEN_RESEND_TAG);
+				if(flags_ble.connection)
+				{
+					HAL_UART_Transmit(&huart1, (uint8_t*) store_TAG[in_use_TAG].N_TAG, TAG_SIZE-1, 1000);
+					HAL_Delay(TIMEOUT_BETWEEN_RESEND_TAG);
+				}
 
+				if (pack_position < last_TAG)
+				{
+					flag_send_to_lora++;
+					if(pack_position >= 10)
+						pack_position=0;
+					memcpy(pack_to_lora[pack_position++].N_TAG, store_TAG[last_TAG].N_TAG, TAG_SIZE);
+				}
 
 				if ((in_use_TAG<last_TAG) && (flags_ble.confirm == SET))
 				{
 					flags_ble.confirm = RESET;
-					PRINTF("NewTag = %d \n\r", pack_position);
-					count_send=0;
-					flag_send_timeout = RESET;
-					flag_send_to_lora++;
-					if(pack_position >= 10)
-						pack_position=0;
-					memcpy(pack_to_lora[pack_position++].N_TAG, store_TAG[in_use_TAG].N_TAG, TAG_SIZE);
+					PRINTF("NewTag to bluetooth \n\r", pack_position);
 					in_use_TAG++;
 				}
 				else if (in_use_TAG>=last_TAG)
