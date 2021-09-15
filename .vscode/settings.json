@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "vcom.h": "c",
+        "timeserver.h": "c"
+    }
+}
