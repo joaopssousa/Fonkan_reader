@@ -271,6 +271,12 @@ static void VERIFY_OPEN(const char* arq){
 	}
 }
 
+
+/*statig void write_to_log(){
+	f_write(&SDFile, store_TAG[last_TAG].N_TAG, sizeof(store_TAG[last_TAG].N_TAG), (void *)&byteswritten);
+	f_close(&SDFile);
+}*/
+
 static void SAVE_ON_CARD(){
 	delayed_store_flag++; 	// Contagem de TAGs atrasadas ao envio
 
@@ -454,7 +460,7 @@ int main(void)
 			AppProcessRequest = LORA_RESET;
 			if(flag_send_to_lora > 0 ){
 				flag_send_to_lora--;
-			//	Send(NULL);
+				Send(NULL);
 				PRINTF("\n Envio pelo tempo configurado \n");
 			}
 		}
