@@ -116,6 +116,7 @@
 									<listOptionValue builtIn="false" value="../../../../../Middlewares/ST/STM32_Secure_Engine/Core"/>
 									<listOptionValue builtIn="false" value="../../../../../Middlewares/Third_Party/LoRaWAN/Patterns/Basic"/>
 									<listOptionValue builtIn="false" value="../../../../../Drivers/BSP/Components/fonkan"/>
+									<listOptionValue builtIn="false" value="../../../../../Drivers/BSP/Components/chafon"/>
 									<listOptionValue builtIn="false" value="../../../../../Middlewares/Third_Party/LoRaWAN/Patterns/Advanced/LmHandler/packages"/>
 									<listOptionValue builtIn="false" value="../../../../../Middlewares/Third_Party/LoRaWAN/Patterns/Advanced/LmHandler"/>
 									<listOptionValue builtIn="false" value="../../../../../Middlewares/Third_Party/LoRaWAN/Patterns/Advanced"/>

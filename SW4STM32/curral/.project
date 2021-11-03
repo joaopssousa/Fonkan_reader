@@ -337,6 +337,11 @@
 			<locationURI>PARENT-4-PROJECT_LOC/Drivers/BSP/Components/station/bmp280.c</locationURI>
 		</link>
 		<link>
+			<name>Drivers/BSP/Components/chafon_4_antennas.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/Drivers/BSP/Components/chafon/chafon_4_antennas.c</locationURI>
+		</link>
+		<link>
 			<name>Drivers/BSP/Components/handlers.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Drivers/BSP/Components/fonkan/handlers.c</locationURI>

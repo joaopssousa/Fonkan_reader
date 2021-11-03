@@ -134,7 +134,7 @@ void HW_Init(void)
     //__HAL_UART_ENABLE_IT(&huart1, UART_IT_RXNE);		// Habilita receber interrupções da UART com Bluetooth
     //__HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);		// Habilita receber interrupções da UART com RFID
     HAL_UART_Receive_IT(&huart1, rx_byte_uart1, 1);
-    HAL_UART_Receive_IT(&huart2, rx_byte_uart2, 1);
+   // HAL_UART_Receive_IT(&huart2, rx_byte_uart2, 1);
     McuInitialized = true;
   }
 }
