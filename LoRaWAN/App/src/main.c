@@ -343,8 +343,7 @@ int main(void)
 #endif
 
   in_use_TAG = EMPTY_QUEUE;
-  INIT_ReaderUART(USART2, 38400);
-
+  INIT_ReaderUART(USART2, 57600);
 
   while (1)
   {
@@ -379,6 +378,7 @@ int main(void)
 		if(flags_ble.rfid_send_cmd == SET){
 			flags_ble.rfid_send_cmd = RESET;
 			data_request_chafon(ANTENNA1);
+
 			HAL_UART_Transmit(&huart2, (uint8_t *)READ_MULTIPLE_TAG, MSG_MULTI_TAG_SIZE, 50);
 		}
 

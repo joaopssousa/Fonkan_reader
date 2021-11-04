@@ -1,0 +1,13 @@
+flash_if.c:322:19:FLASH_INT_If_Clear_Error	8	static
+flash_if.c:74:19:FLASH_If_Init	0	static
+flash_if.c:132:19:FLASH_If_Read	8	static
+flash_if.c:151:19:FLASH_INT_Init	0	static
+flash_if.c:162:19:FLASH_INT_If_Erase_Size	48	static
+flash_if.c:91:19:FLASH_If_Erase_Size	0	static
+flash_if.c:227:19:FLASH_INT_If_Write	24	static
+flash_if.c:111:19:FLASH_If_Write	0	static
+flash_if.c:285:19:FLASH_INT_If_Read	8	static
+flash_if.c:293:19:FLASH_EXT_Init	0	static
+flash_if.c:301:19:FLASH_EXT_If_Erase_Size	0	static
+flash_if.c:306:19:FLASH_EXT_If_Write	0	static
+flash_if.c:311:19:FLASH_EXT_If_Read	0	static

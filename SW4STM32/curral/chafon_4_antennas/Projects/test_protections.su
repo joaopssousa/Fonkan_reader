@@ -1,0 +1,4 @@
+test_protections.c:386:13:TEST_PROTECTIONS_CORRUPT_PrintMenu	8	static
+test_protections.c:212:13:TEST_PROTECTIONS_PrintTestingMenu	8	static
+test_protections.c:134:6:TEST_PROTECTIONS_RunMenu	64	static
+test_protections.c:532:6:HAL_RTCEx_Tamper1EventCallback	0	static

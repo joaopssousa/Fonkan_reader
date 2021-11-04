@@ -1,0 +1,6 @@
+LmhpFragmentation.c:194:13:LmhpFragmentationIsInitialized	0	static
+LmhpFragmentation.c:199:13:LmhpFragmentationIsRunning	0	static
+LmhpFragmentation.c:209:13:LmhpFragmentationProcess	0	static
+LmhpFragmentation.c:215:13:LmhpFragmentationOnMcpsIndication	104	static
+LmhpFragmentation.c:176:13:LmhpFragmentationInit	0	static
+LmhpFragmentation.c:171:15:LmhpFragmentationPackageFactory	0	static

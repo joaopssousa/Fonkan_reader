@@ -35,6 +35,7 @@ Maintainer: Miguel Luis and Gregory Cristian
 #include "hw.h"
 #include "stm32f4xx_it.h"
 #include "handlers.h"
+#include "chafon_4_antennas.h"
 
 extern uint8_t ble_state;
 uint8_t count_tim3 = 0;
@@ -273,28 +274,52 @@ void USART2_IRQHandler(void)
   /* USER CODE END USART2_IRQn 0 */
 	HAL_UART_IRQHandler(&huart2);
 	/* USER CODE BEGIN USART2_IRQn 1 */
-//	message[message_index] = rx_byte_uart2[0];
-//	message_index++;
-//
-//	/*
-//	 * Testa se recebeu o fim da messagem 0x0D.
-//	 */
-//	if (message_index > 3)
-//	{
-//		if ((message[message_index - 4] == 0x0A)
-//				&& ((message[message_index - 3] == 0x55) || (message[message_index - 3] == 0x58))
-//				&& (message[message_index - 2] == 0x0D)
-//				&& (message[message_index - 1] == 0x0A))
-//		{
-//			flags_ble.tag = SET;// Aciona a flag mostrando que recebeu mensagem válida
-//			bytes_read_rfid = message_index;
-//			message_index=0;
-//		}
-//	}
-//	HAL_NVIC_ClearPendingIRQ(USART2_IRQn);
-//	HAL_UART_Abort_IT(&huart2);
-////	HAL_UART_Receive_IT(&huart2, rx_byte_uart2, 1);
-//	/* USER CODE END USART2_IRQn 1 */
+	message[message_index] = rx_byte_uart2[0];
+	message_index++;
+
+#ifdef USE_FONKAN_1_ANTENNA
+
+	/*
+	 * Testa se recebeu o fim da messagem 0x0D.
+	 */
+	if (message_index > 3)
+	{
+		if ((message[message_index - 4] == 0x0A)
+				&& ((message[message_index - 3] == 0x55) || (message[message_index - 3] == 0x58))
+				&& (message[message_index - 2] == 0x0D)
+				&& (message[message_index - 1] == 0x0A))
+		{
+			flags_ble.tag = SET;// Aciona a flag mostrando que recebeu mensagem válida
+			bytes_read_rfid = message_index;
+			message_index=0;
+		}
+	}
+#endif
+
+#ifdef USE_CHAFON_4_ANTENNAS
+
+	data[contbyte++] =  rx_byte_uart2[0];
+		if(contbyte == data[0]+1)
+		{
+			contbyte = 0;
+		}
+		else if(contbyte == data[0]+1 )
+		{
+			communicationValidationFlag = 1;
+			contbyte = 0;
+		}else if(contbyte == data[0]+1)
+		{
+			cleanBuffFlag = 1;
+			contbyte = 0;
+		}
+
+#endif
+
+	HAL_NVIC_ClearPendingIRQ(USART2_IRQn);
+	HAL_UART_Abort_IT(&huart2);
+	HAL_UART_Receive_IT(&huart2, rx_byte_uart2, 1);
+
+	/* USER CODE END USART2_IRQn 1 */
 }
 
 
