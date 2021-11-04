@@ -351,6 +351,7 @@ int main(void)
 
 	if (flags_ble.enable_handler){
 		flags_ble.enable_handler = 0;
+		PRINTF("------------------------------------------\n");
 		ble_handler((uint8_t*)&message_ble);					// Aciona o handler para selecionar a mensagem de resposta.
 	}
 
@@ -371,14 +372,14 @@ int main(void)
 		HAL_UART_Receive_IT(&huart1, rx_byte_uart1, 1);
 	}
 
-	if ((flags_ble.start == SET) && (flags_ble.connection == SET))
+	if ((flags_ble.start == SET)/* && (flags_ble.connection == SET)*/)
 	{
+		PRINTF("entrou\n");
 
 		//Envia Comando de leitura de brinco
 		if(flags_ble.rfid_send_cmd == SET){
 			flags_ble.rfid_send_cmd = RESET;
 			data_request_chafon(ANTENNA1);
-
 			HAL_UART_Transmit(&huart2, (uint8_t *)READ_MULTIPLE_TAG, MSG_MULTI_TAG_SIZE, 50);
 		}
 
