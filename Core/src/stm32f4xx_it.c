@@ -189,26 +189,26 @@ void TIM3_IRQHandler(void)
 	 * 	o pino de estado se manteve em alta e conexão foi bem sucedida.
 	 */
 
-	ble_state = HAL_GPIO_ReadPin(BLE_STATE_GPIO_Port,BLE_STATE_Pin);
-	if (ble_state == 1)
-	{
+//	ble_state = HAL_GPIO_ReadPin(BLE_STATE_GPIO_Port,BLE_STATE_Pin);
+//	if (ble_state == 1)
+//	{
 		if (++count_tim3 > 9)
 		{
 			flags_ble.connection = SET;
 			count_tim3 = 0;
 		}
-	}
-	else
-	{
-		flags_ble.connection = RESET;
-		count_tim3 = 0;
-	}
-
-	// Para as requisições de TAG pois a conexão foi quebrada
-	if(flags_ble.connection == RESET)
-	{
-			HAL_TIM_Base_Stop_IT(&htim2);
-	}
+//	}
+//	else
+//	{
+//		flags_ble.connection = RESET;
+//		count_tim3 = 0;
+//	}
+//
+//	// Para as requisições de TAG pois a conexão foi quebrada
+//	if(flags_ble.connection == RESET)
+//	{
+//		HAL_TIM_Base_Stop_IT(&htim2);
+//	}
 
 	if(flags_ble.start == SET){
 		if(count_send++ == 50)
@@ -274,11 +274,11 @@ void USART2_IRQHandler(void)
   /* USER CODE END USART2_IRQn 0 */
 	HAL_UART_IRQHandler(&huart2);
 	/* USER CODE BEGIN USART2_IRQn 1 */
-	message[message_index] = rx_byte_uart2[0];
-	message_index++;
+
 
 #ifdef USE_FONKAN_1_ANTENNA
-
+	message[message_index] = rx_byte_uart2[0];
+	message_index++;
 	/*
 	 * Testa se recebeu o fim da messagem 0x0D.
 	 */

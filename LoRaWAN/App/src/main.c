@@ -55,6 +55,8 @@ uint8_t flag_send_to_lora = LORA_RESET;
 Model_TAG  tag_to_lora;
 Model_TAG pack_to_lora[10];
 
+Model_TAG earrings_TAG;
+
 // Tamanho e vetor de dados para usar a serial para testes.
 uint16_t size;
 char Data[256];
@@ -374,13 +376,17 @@ int main(void)
 
 	if ((flags_ble.start == SET)/* && (flags_ble.connection == SET)*/)
 	{
-		PRINTF("entrou\n");
-
 		//Envia Comando de leitura de brinco
 		if(flags_ble.rfid_send_cmd == SET){
 			flags_ble.rfid_send_cmd = RESET;
+#ifdef USE_CHAFON_4_ANTENNAS
 			data_request_chafon(ANTENNA1);
+			getEarrings(&earrings_TAG);
+
+#endif
+#ifdef USE_FONKAN_1_ANTENNA
 			HAL_UART_Transmit(&huart2, (uint8_t *)READ_MULTIPLE_TAG, MSG_MULTI_TAG_SIZE, 50);
+#endif
 		}
 
 
