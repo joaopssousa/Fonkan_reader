@@ -55,7 +55,7 @@ uint8_t flag_send_to_lora = LORA_RESET;
 Model_TAG  tag_to_lora;
 Model_TAG pack_to_lora[10];
 
-Model_TAG earrings_TAG;
+Model_TAG earrings_TAG[100];
 
 // Tamanho e vetor de dados para usar a serial para testes.
 uint16_t size;
@@ -354,6 +354,7 @@ int main(void)
 	if (flags_ble.enable_handler){
 		flags_ble.enable_handler = 0;
 		PRINTF("------------------------------------------\n");
+
 		ble_handler((uint8_t*)&message_ble);					// Aciona o handler para selecionar a mensagem de resposta.
 	}
 

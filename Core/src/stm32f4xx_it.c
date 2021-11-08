@@ -294,30 +294,29 @@ void USART2_IRQHandler(void)
 			message_index=0;
 		}
 	}
+	HAL_NVIC_ClearPendingIRQ(USART2_IRQn);
+	HAL_UART_Abort_IT(&huart2);
+	HAL_UART_Receive_IT(&huart2, rx_byte_uart2, 1);
 #endif
 
 #ifdef USE_CHAFON_4_ANTENNAS
 
-	data[contbyte++] =  rx_byte_uart2[0];
-		if(contbyte == data[0]+1)
+	data[contbyte] =  reciverBuffer[0];
+	contbyte++;
+
+		if(contbyte == data[0]+1 && data[0] != 0)
 		{
 			contbyte = 0;
-		}
-		else if(contbyte == data[0]+1 )
-		{
 			communicationValidationFlag = 1;
-			contbyte = 0;
-		}else if(contbyte == data[0]+1)
-		{
 			cleanBuffFlag = 1;
-			contbyte = 0;
 		}
 
+		HAL_NVIC_ClearPendingIRQ(USART2_IRQn);
+		HAL_UART_Abort_IT(&huart2);
+		HAL_UART_Receive_IT(&huart2, reciverBuffer, 1);
 #endif
 
-	HAL_NVIC_ClearPendingIRQ(USART2_IRQn);
-	HAL_UART_Abort_IT(&huart2);
-	HAL_UART_Receive_IT(&huart2, rx_byte_uart2, 1);
+
 
 	/* USER CODE END USART2_IRQn 1 */
 }

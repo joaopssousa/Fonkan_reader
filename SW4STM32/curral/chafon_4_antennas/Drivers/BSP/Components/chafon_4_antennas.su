@@ -1,4 +1,4 @@
-chafon_4_antennas.c:72:6:INIT_ReaderUART	48	static
+chafon_4_antennas.c:72:6:INIT_ReaderUART	56	static
 chafon_4_antennas.c:118:6:uart_callback	0	static
 chafon_4_antennas.c:132:6:getEarrings	0	static
-chafon_4_antennas.c:139:6:data_request_chafon	0	static
+chafon_4_antennas.c:138:6:data_request_chafon	0	static
