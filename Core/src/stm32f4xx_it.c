@@ -302,20 +302,19 @@ void USART2_IRQHandler(void)
 #ifdef USE_CHAFON_4_ANTENNAS
 
 	data[contbyte] =  reciverBuffer[0];
-	contbyte++;
-
-		if(contbyte == data[0]+1 && data[0] != 0)
+		contbyte++;
+		if(contbyte == data[0]+1)
 		{
 			contbyte = 0;
 			communicationValidationFlag = 1;
 			cleanBuffFlag = 1;
 		}
 
+
 		HAL_NVIC_ClearPendingIRQ(USART2_IRQn);
 		HAL_UART_Abort_IT(&huart2);
 		HAL_UART_Receive_IT(&huart2, reciverBuffer, 1);
 #endif
-
 
 
 	/* USER CODE END USART2_IRQn 1 */

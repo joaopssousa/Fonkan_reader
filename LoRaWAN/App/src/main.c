@@ -346,11 +346,18 @@ int main(void)
 
   in_use_TAG = EMPTY_QUEUE;
   INIT_ReaderUART(USART2, 57600);
+  init_Communication();
 
   while (1)
   {
+	 if(communicationValidationFlag)
+	 {
 
+		 data_Validation();
+		 communicationValidationFlag = 0;
+	 }
 
+	  //uart_callback();
 	if (flags_ble.enable_handler){
 		flags_ble.enable_handler = 0;
 		PRINTF("------------------------------------------\n");
@@ -380,9 +387,17 @@ int main(void)
 		//Envia Comando de leitura de brinco
 		if(flags_ble.rfid_send_cmd == SET){
 			flags_ble.rfid_send_cmd = RESET;
+
 #ifdef USE_CHAFON_4_ANTENNAS
+
 			data_request_chafon(ANTENNA1);
-			getEarrings(&earrings_TAG);
+
+//			getEarrings(earrings_TAG);
+//			for(int i = 0; i < 5 ;i++){
+//							for(int j = 0; j < 12; j++)
+//								PRINTF(" -- %x (%d)(%d)\n", earrings_TAG[i].N_TAG[j],i,j);
+//
+//						}
 
 #endif
 #ifdef USE_FONKAN_1_ANTENNA
