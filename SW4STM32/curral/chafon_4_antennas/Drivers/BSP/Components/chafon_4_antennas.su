@@ -1,7 +1,5 @@
-chafon_4_antennas.c:73:6:INIT_ReaderUART	40	static
-chafon_4_antennas.c:117:6:uart_callback	0	static
-chafon_4_antennas.c:123:6:init_Communication	8	static
-chafon_4_antennas.c:130:6:getEarrings	0	static
-chafon_4_antennas.c:136:6:data_request_chafon	0	static
-chafon_4_antennas.c:145:6:data_Validation	16	static
-chafon_4_antennas.c:169:10:get_Queue_len	0	static
+chafon_4_antennas.c:68:6:INIT_ReaderUART	40	static
+chafon_4_antennas.c:108:6:init_Communication	8	static
+chafon_4_antennas.c:114:10:get_Earrings	8	static
+chafon_4_antennas.c:138:6:data_request_chafon	0	static
+chafon_4_antennas.c:146:6:data_Validation	16	static

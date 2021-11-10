@@ -189,26 +189,26 @@ void TIM3_IRQHandler(void)
 	 * 	o pino de estado se manteve em alta e conexão foi bem sucedida.
 	 */
 
-//	ble_state = HAL_GPIO_ReadPin(BLE_STATE_GPIO_Port,BLE_STATE_Pin);
-//	if (ble_state == 1)
-//	{
+	ble_state = HAL_GPIO_ReadPin(BLE_STATE_GPIO_Port,BLE_STATE_Pin);
+	if (ble_state == 1)
+	{
 		if (++count_tim3 > 9)
 		{
 			flags_ble.connection = SET;
 			count_tim3 = 0;
 		}
-//	}
-//	else
-//	{
-//		flags_ble.connection = RESET;
-//		count_tim3 = 0;
-//	}
-//
+	}
+	else
+	{
+		flags_ble.connection = RESET;
+		count_tim3 = 0;
+	}
+
 //	// Para as requisições de TAG pois a conexão foi quebrada
-//	if(flags_ble.connection == RESET)
-//	{
-//		HAL_TIM_Base_Stop_IT(&htim2);
-//	}
+	if(flags_ble.connection == RESET)
+	{
+		HAL_TIM_Base_Stop_IT(&htim2);
+	}
 
 	if(flags_ble.start == SET){
 		if(count_send++ == 50)
@@ -301,19 +301,17 @@ void USART2_IRQHandler(void)
 
 #ifdef USE_CHAFON_4_ANTENNAS
 
-	data[contbyte] =  reciverBuffer[0];
-		contbyte++;
-		if(contbyte == data[0]+1)
+	data[count_byte++] =  reciver_buffer[0];
+		if(count_byte == data[0]+1)
 		{
-			contbyte = 0;
-			communicationValidationFlag = 1;
-			cleanBuffFlag = 1;
+			count_byte = 0;
+			communication_validation_flag = 1;
 		}
 
 
 		HAL_NVIC_ClearPendingIRQ(USART2_IRQn);
 		HAL_UART_Abort_IT(&huart2);
-		HAL_UART_Receive_IT(&huart2, reciverBuffer, 1);
+		HAL_UART_Receive_IT(&huart2, reciver_buffer, 1);
 #endif
 
 

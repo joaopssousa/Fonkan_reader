@@ -55,7 +55,7 @@ uint8_t flag_send_to_lora = LORA_RESET;
 Model_TAG  tag_to_lora;
 Model_TAG pack_to_lora[10];
 
-Model_TAG earrings_TAG[100];
+Model_TAG earrings_TAG;
 
 // Tamanho e vetor de dados para usar a serial para testes.
 uint16_t size;
@@ -350,18 +350,16 @@ int main(void)
 
   while (1)
   {
-	 if(communicationValidationFlag)
+	 if(communication_validation_flag)
 	 {
-
 		 data_Validation();
-		 communicationValidationFlag = 0;
+		 communication_validation_flag = 0;
 	 }
 
 	  //uart_callback();
 	if (flags_ble.enable_handler){
 		flags_ble.enable_handler = 0;
 		PRINTF("------------------------------------------\n");
-
 		ble_handler((uint8_t*)&message_ble);					// Aciona o handler para selecionar a mensagem de resposta.
 	}
 
@@ -382,7 +380,7 @@ int main(void)
 		HAL_UART_Receive_IT(&huart1, rx_byte_uart1, 1);
 	}
 
-	if ((flags_ble.start == SET)/* && (flags_ble.connection == SET)*/)
+	if ((flags_ble.start == SET) && (flags_ble.connection == SET))
 	{
 		//Envia Comando de leitura de brinco
 		if(flags_ble.rfid_send_cmd == SET){
@@ -390,15 +388,7 @@ int main(void)
 
 #ifdef USE_CHAFON_4_ANTENNAS
 
-			data_request_chafon(ANTENNA1);
-
-//			getEarrings(earrings_TAG);
-//			for(int i = 0; i < 5 ;i++){
-//							for(int j = 0; j < 12; j++)
-//								PRINTF(" -- %x (%d)(%d)\n", earrings_TAG[i].N_TAG[j],i,j);
-//
-//						}
-
+			data_request_chafon(ANTENNA4);
 #endif
 #ifdef USE_FONKAN_1_ANTENNA
 			HAL_UART_Transmit(&huart2, (uint8_t *)READ_MULTIPLE_TAG, MSG_MULTI_TAG_SIZE, 50);
@@ -429,7 +419,10 @@ int main(void)
 			// 	Envio ao app via bluetooth
 			if(in_use_TAG>=0)
 			{
-
+				if(get_Earrings(&earrings_TAG)){
+							for(int j = 0; j < 12; j++)
+								PRINTF(" -- %x (%d)\n", earrings_TAG.N_TAG[j],j);
+							}
 //######### DEBUG ################
 //				PRINTF("%d Brinco: ", in_use_TAG);
 //				for (uint8_t i = 0; i <= TAG_SIZE-1;i++)
