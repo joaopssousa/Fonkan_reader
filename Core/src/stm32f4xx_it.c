@@ -189,7 +189,7 @@ void TIM3_IRQHandler(void)
 	 * 	o pino de estado se manteve em alta e conexão foi bem sucedida.
 	 */
 
-	ble_state = HAL_GPIO_ReadPin(BLE_STATE_GPIO_Port,BLE_STATE_Pin);
+	ble_state = 1; //HAL_GPIO_ReadPin(BLE_STATE_GPIO_Port,BLE_STATE_Pin);
 	if (ble_state == 1)
 	{
 		if (++count_tim3 > 9)
@@ -306,6 +306,7 @@ void USART2_IRQHandler(void)
 		{
 			count_byte = 0;
 			communication_validation_flag = 1;
+
 		}
 
 

@@ -54,8 +54,11 @@ int8_t t = 0;
 uint8_t flag_send_to_lora = LORA_RESET;
 Model_TAG  tag_to_lora;
 Model_TAG pack_to_lora[10];
-
 Model_TAG earrings_TAG;
+uint8_t send_Tag_ble[36] = {0x0a,0x55,0x33,0x30,0x30,0x30};
+uint8_t end_Tag_ble[] = {0x00,0x00,0x0d,0x0a};
+uint8_t aciis_tag[24];
+bool a = false;
 
 // Tamanho e vetor de dados para usar a serial para testes.
 uint16_t size;
@@ -302,6 +305,25 @@ static void REMOVE_FROM_CARD(){
 
 /************* End of Sd card functions *****************/
 
+unsigned char nibble_to_ascii(unsigned char c){
+    if((c>=0)&&(c<=9)){
+        return (c+=48);
+    }
+    else{
+        return (c+=55);
+    }
+}
+
+int hex_to_ascii(unsigned char *buffer_out, unsigned char *buffer_in, int tamanho){
+    printf("tamanho %d\n", tamanho);
+    int j=0;
+    for(int i=0; i<(tamanho);i++)
+    {
+        buffer_out[j] = nibble_to_ascii((buffer_in[i]&0xF0)>>4);
+        buffer_out[j+1] = nibble_to_ascii(buffer_in[i]&0x0F);
+        j+=2;
+    }
+}
 
 /**
   * @brief  Main program
@@ -345,6 +367,7 @@ int main(void)
 #endif
 
   in_use_TAG = EMPTY_QUEUE;
+
   INIT_ReaderUART(USART2, 57600);
   init_Communication();
 
@@ -379,7 +402,21 @@ int main(void)
 		MX_USART1_UART_Init();
 		HAL_UART_Receive_IT(&huart1, rx_byte_uart1, 1);
 	}
-
+#ifdef USE_CHAFON_4_ANTENNAS
+	if(flags_ble.confirm == RESET && get_Earrings(&earrings_TAG))
+	{
+		hex_to_ascii(&aciis_tag, &earrings_TAG.N_TAG, 12);
+		memcpy(&send_Tag_ble[6], aciis_tag, 24);
+		send_Tag_ble[30] = 0xA0;
+		send_Tag_ble[31] = 0xA0;
+		send_Tag_ble[32] = 0xA0;
+		send_Tag_ble[33] = 0xA0;
+		send_Tag_ble[34] = 0x0d;
+		send_Tag_ble[35] = 0x0A;
+		flags_ble.confirm = SET;
+		a = true;
+	}
+#endif
 	if ((flags_ble.start == SET) && (flags_ble.connection == SET))
 	{
 		//Envia Comando de leitura de brinco
@@ -389,6 +426,14 @@ int main(void)
 #ifdef USE_CHAFON_4_ANTENNAS
 
 			data_request_chafon(ANTENNA4);
+
+			if(a){
+			HAL_UART_Transmit(&huart1, (uint8_t *)send_Tag_ble, 36, 1000);
+			for(int i = 0; i < 36; i++)
+				PRINTF(" %x", send_Tag_ble[i]);
+				PRINTF("\n");
+			}
+
 #endif
 #ifdef USE_FONKAN_1_ANTENNA
 			HAL_UART_Transmit(&huart2, (uint8_t *)READ_MULTIPLE_TAG, MSG_MULTI_TAG_SIZE, 50);
@@ -419,10 +464,7 @@ int main(void)
 			// 	Envio ao app via bluetooth
 			if(in_use_TAG>=0)
 			{
-				if(get_Earrings(&earrings_TAG)){
-							for(int j = 0; j < 12; j++)
-								PRINTF(" -- %x (%d)\n", earrings_TAG.N_TAG[j],j);
-							}
+
 //######### DEBUG ################
 //				PRINTF("%d Brinco: ", in_use_TAG);
 //				for (uint8_t i = 0; i <= TAG_SIZE-1;i++)
