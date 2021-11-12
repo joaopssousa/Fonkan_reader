@@ -1,5 +1,5 @@
 chafon_4_antennas.c:68:6:INIT_ReaderUART	40	static
 chafon_4_antennas.c:108:6:init_Communication	8	static
-chafon_4_antennas.c:114:10:get_Earrings	8	static
+chafon_4_antennas.c:114:10:get_Earrings	0	static
 chafon_4_antennas.c:139:6:data_request_chafon	0	static
 chafon_4_antennas.c:147:6:data_Validation	16	static

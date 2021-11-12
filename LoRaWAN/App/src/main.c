@@ -38,6 +38,8 @@
 
 #define DISABLE_LORA 0
 
+#define SIZE_EARRING_SEND 35
+
 /* Variaveis curral */
 
 TIM_HandleTypeDef htim2;
@@ -50,15 +52,13 @@ TIM_HandleTypeDef htim3;
 _Bool flag_lora_joined = RESET;
 
 // Contador de teste
-int8_t t = 0;
 uint8_t flag_send_to_lora = LORA_RESET;
 Model_TAG  tag_to_lora;
 Model_TAG pack_to_lora[10];
+
 Model_TAG earrings_TAG;
-uint8_t send_Tag_ble[36] = {0x0a,0x55,0x33,0x30,0x30,0x30};
-uint8_t end_Tag_ble[] = {0x00,0x00,0x0d,0x0a};
+uint8_t send_Tag_ble[SIZE_EARRING_SEND] = {0x0a,0x55,0x33,0x30,0x30,0x30};
 uint8_t aciis_tag[24];
-bool a = false;
 
 // Tamanho e vetor de dados para usar a serial para testes.
 uint16_t size;
@@ -403,19 +403,29 @@ int main(void)
 		HAL_UART_Receive_IT(&huart1, rx_byte_uart1, 1);
 	}
 #ifdef USE_CHAFON_4_ANTENNAS
-	if(flags_ble.confirm == RESET && get_Earrings(&earrings_TAG))
+	if(get_Earrings(&earrings_TAG) && flags_ble.tag == RESET)
 	{
-		hex_to_ascii(&aciis_tag, &earrings_TAG.N_TAG, 12);
+		flags_ble.tag = SET;
+		flags_ble.confirm = SET;
+
+	}
+
+	if(flags_ble.confirm == SET)
+	{
+		if(!get_Earrings(&earrings_TAG) && number_earrings == 0)
+			flags_ble.tag = RESET;
+		hex_to_ascii(&aciis_tag, earrings_TAG.N_TAG, 12);
 		memcpy(&send_Tag_ble[6], aciis_tag, 24);
 		send_Tag_ble[30] = 0xA0;
 		send_Tag_ble[31] = 0xA0;
 		send_Tag_ble[32] = 0xA0;
 		send_Tag_ble[33] = 0xA0;
-		send_Tag_ble[34] = 0x0d;
-		send_Tag_ble[35] = 0x0A;
-		flags_ble.confirm = SET;
-		a = true;
+		send_Tag_ble[34] = 0x0D;
+		number_earrings++;
+
+		flags_ble.confirm = RESET;
 	}
+
 #endif
 	if ((flags_ble.start == SET) && (flags_ble.connection == SET))
 	{
@@ -427,20 +437,22 @@ int main(void)
 
 			data_request_chafon(ANTENNA4);
 
-			if(a){
-			HAL_UART_Transmit(&huart1, (uint8_t *)send_Tag_ble, 36, 1000);
-			for(int i = 0; i < 36; i++)
+			if(flags_ble.tag == SET){
+			HAL_UART_Transmit(&huart1, (uint8_t *)send_Tag_ble, SIZE_EARRING_SEND, 50);
+			PRINTF("(%d) ", number_earrings);
+			for(int i = 0; i < SIZE_EARRING_SEND; i++)
 				PRINTF(" %x", send_Tag_ble[i]);
 				PRINTF("\n");
 			}
 
 #endif
+
 #ifdef USE_FONKAN_1_ANTENNA
 			HAL_UART_Transmit(&huart2, (uint8_t *)READ_MULTIPLE_TAG, MSG_MULTI_TAG_SIZE, 50);
 #endif
 		}
 
-
+#ifdef USE_FONKAN_1_ANTENNA
 		if(flags_ble.tag == SET)
 		{
 			if(bytes_read_rfid>4)
@@ -509,7 +521,7 @@ int main(void)
 //			clear_buffers();
 //			// TODO Procurar um método mais fácil para limpar o armazenamento das TAGs
 //		}
-
+#endif
 
 	}
 
