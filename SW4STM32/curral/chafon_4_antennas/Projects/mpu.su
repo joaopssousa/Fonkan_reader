@@ -1,5 +1,0 @@
-mpu.c:86:6:SVC_NVIC_SystemReset	0	static,ignoring_inline_asm
-mpu.c:97:6:SVC_MPU_Disable	0	static,ignoring_inline_asm
-mpu.c:144:6:HAL_APP_SVC_Handler	0	static
-mpu.c:114:6:MPU_SVC_Handler	0	static
-mpu.c:172:6:MPU_EnterUnprivilegedMode	0	static,ignoring_inline_asm

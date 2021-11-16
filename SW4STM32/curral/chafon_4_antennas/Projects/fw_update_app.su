@@ -1,5 +1,0 @@
-fw_update_app.c:455:19:Ymodem_HeaderPktRxCpltCallback	8	static
-fw_update_app.c:488:19:Ymodem_DataPktRxCpltCallback	336	static
-fw_update_app.c:92:6:FW_UPDATE_Run	360	static
-fw_update_app.c:165:6:FW_UPDATE_MULTIPLE_RunMenu	8	static
-fw_update_app.c:369:6:FW_VALIDATE_RunMenu	0	static

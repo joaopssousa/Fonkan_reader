@@ -315,7 +315,6 @@ unsigned char nibble_to_ascii(unsigned char c){
 }
 
 int hex_to_ascii(unsigned char *buffer_out, unsigned char *buffer_in, int tamanho){
-    printf("tamanho %d\n", tamanho);
     int j=0;
     for(int i=0; i<(tamanho);i++)
     {
@@ -323,6 +322,7 @@ int hex_to_ascii(unsigned char *buffer_out, unsigned char *buffer_in, int tamanh
         buffer_out[j+1] = nibble_to_ascii(buffer_in[i]&0x0F);
         j+=2;
     }
+    return 0;
 }
 
 /**
@@ -382,7 +382,6 @@ int main(void)
 	  //uart_callback();
 	if (flags_ble.enable_handler){
 		flags_ble.enable_handler = 0;
-		PRINTF("------------------------------------------\n");
 		ble_handler((uint8_t*)&message_ble);					// Aciona o handler para selecionar a mensagem de resposta.
 	}
 
@@ -407,12 +406,12 @@ int main(void)
 	{
 		flags_ble.tag = SET;
 		flags_ble.confirm = SET;
-
-	}
+	}//else
+		//flags_ble.tag = RESET;
 
 	if(flags_ble.confirm == SET)
 	{
-		if(!get_Earrings(&earrings_TAG) && number_earrings == 0)
+		if(!get_Earrings(&earrings_TAG))
 			flags_ble.tag = RESET;
 		hex_to_ascii(&aciis_tag, earrings_TAG.N_TAG, 12);
 		memcpy(&send_Tag_ble[6], aciis_tag, 24);

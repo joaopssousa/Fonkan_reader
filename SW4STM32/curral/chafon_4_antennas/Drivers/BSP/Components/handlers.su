@@ -1,9 +1,0 @@
-handlers.c:95:6:assert_device_type	0	static
-handlers.c:101:6:assert_version	0	static
-handlers.c:304:6:break_connection	8	static
-handlers.c:176:5:ble_handler	8	static
-handlers.c:317:6:clear_buffers	0	static
-handlers.c:122:5:message_handler	24	static
-handlers.c:330:6:MX_USART1_UART_Init	8	static
-handlers.c:353:6:MX_USART2_UART_Init	8	static
-handlers.c:377:6:Ble_Init_GPIO	48	static
