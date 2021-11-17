@@ -1,0 +1,11 @@
+main.c:566:6:LoraMacProcessNotify	0	static
+main.c:743:13:LORA_TxNeeded	0	static
+main.c:731:13:LORA_ConfirmClass	8	static
+main.c:572:13:LORA_HasJoined	0	static
+main.c:756:9:LORA_GetBatteryLevel	8	static
+main.c:711:13:OnTxTimerEvent	8	static
+main.c:657:13:LORA_RxData	8	static
+main.c:222:5:size_list	32	static
+main.c:308:15:nibble_to_ascii	0	static
+main.c:317:5:hex_to_ascii	16	static
+main.c:333:5:main	56	static

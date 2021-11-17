@@ -413,8 +413,8 @@ int main(void)
 	{
 		if(!get_Earrings(&earrings_TAG))
 			flags_ble.tag = RESET;
-		hex_to_ascii(&aciis_tag, earrings_TAG.N_TAG, 12);
-		memcpy(&send_Tag_ble[6], aciis_tag, 24);
+		//hex_to_ascii(&aciis_tag, earrings_TAG.N_TAG, 12);
+		memcpy(&send_Tag_ble[6], earrings_TAG.N_TAG, 12);
 		send_Tag_ble[30] = 0xA0;
 		send_Tag_ble[31] = 0xA0;
 		send_Tag_ble[32] = 0xA0;

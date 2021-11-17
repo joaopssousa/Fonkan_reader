@@ -1,0 +1,13 @@
+FragDecoder.c:494:13:SetRow	8	static
+FragDecoder.c:502:13:GetRow	8	static
+FragDecoder.c:521:16:GetParity	0	static
+FragDecoder.c:529:13:SetParity	8	static
+FragDecoder.c:551:13:XorDataLine	12	static
+FragDecoder.c:559:13:XorParityLine	24	static
+FragDecoder.c:638:13:FragFindMissingFrags	16	static
+FragDecoder.c:669:17:FragFindMissingIndex	12	static
+FragDecoder.c:688:13:FragExtractLineFromBinaryMatrix	32	static
+FragDecoder.c:243:6:FragDecoderInit	32	static
+FragDecoder.c:294:10:FragDecoderGetMaxFileSize	0	static
+FragDecoder.c:300:9:FragDecoderProcess	344	static
+FragDecoder.c:482:21:FragDecoderGetStatus	0	static

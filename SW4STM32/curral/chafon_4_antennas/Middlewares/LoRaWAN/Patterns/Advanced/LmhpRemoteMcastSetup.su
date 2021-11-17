@@ -1,0 +1,8 @@
+LmhpRemoteMcastSetup.c:201:13:LmhpRemoteMcastSetupIsInitialized	0	static
+LmhpRemoteMcastSetup.c:206:13:LmhpRemoteMcastSetupIsRunning	0	static
+LmhpRemoteMcastSetup.c:216:13:LmhpRemoteMcastSetupProcess	0	static
+LmhpRemoteMcastSetup.c:221:13:LmhpRemoteMcastSetupOnMcpsIndication	72	static
+LmhpRemoteMcastSetup.c:411:13:OnSessionStopTimer	8	static
+LmhpRemoteMcastSetup.c:400:13:OnSessionStartTimer	8	static
+LmhpRemoteMcastSetup.c:183:13:LmhpRemoteMcastSetupInit	8	static
+LmhpRemoteMcastSetup.c:178:15:LmhpRemoteMcastSetupPackageFactory	0	static

@@ -1,0 +1,2 @@
+battery_monitor.c:43:6:init_battery_monitor	32	static
+battery_monitor.c:50:8:get_battery_voltage	8	static
