@@ -1,7 +1,5 @@
-chafon_4_antennas.c:151:17:check_earring_size	8	static
 chafon_4_antennas.c:65:6:INIT_ReaderUART	40	static
 chafon_4_antennas.c:124:6:init_Communication	8	static
-chafon_4_antennas.c:130:10:get_Earrings	16	static
-chafon_4_antennas.c:140:10:get_earrings_ascii	16	static
-chafon_4_antennas.c:166:6:data_request_chafon	0	static
-chafon_4_antennas.c:173:6:data_Validation	24	static
+chafon_4_antennas.c:130:9:get_Earrings	8	static
+chafon_4_antennas.c:167:6:data_request_chafon	0	static
+chafon_4_antennas.c:174:6:data_Validation	48	static

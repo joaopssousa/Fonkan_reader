@@ -306,13 +306,12 @@ void USART2_IRQHandler(void)
 		{
 			count_byte = 0;
 			communication_validation_flag = 1;
-
 		}
-
 
 		HAL_NVIC_ClearPendingIRQ(USART2_IRQn);
 		HAL_UART_Abort_IT(&huart2);
 		HAL_UART_Receive_IT(&huart2, reciver_buffer, 1);
+
 #endif
 
 
