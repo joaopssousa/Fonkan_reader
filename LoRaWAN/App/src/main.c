@@ -373,11 +373,7 @@ int main(void)
 
   while (1)
   {
-	 if(communication_validation_flag)
-	 {
-		 data_Validation();
-		 communication_validation_flag = 0;
-	 }
+
 
 	  //uart_callback();
 	if (flags_ble.enable_handler){
@@ -406,6 +402,11 @@ int main(void)
 	{
 #ifdef USE_CHAFON_4_ANTENNAS
 
+	if(communication_validation_flag)
+		 {
+			 data_Validation();
+			 communication_validation_flag = 0;
+		 }
 	if(flags_ble.spare0 == SET){
 		if (get_Earrings(&earrings_TAG)) {
 
@@ -432,13 +433,17 @@ int main(void)
 
 		flags_ble.confirm = RESET;
 	}
-		if (flags_ble.tag == SET) {
-			HAL_UART_Transmit(&huart1, (uint8_t*) send_Tag_ble,	SIZE_EARRING_SEND, 1000);
-//			PRINTF("(%d) ", number_earrings);
-//			for (int i = 0; i < SIZE_EARRING_SEND; i++)
-//				PRINTF(" %x", send_Tag_ble[i]);
-//			PRINTF("\n");
-		}
+
+			if (flags_ble.tag == SET) {
+				if (send_flag) {
+					HAL_UART_Transmit(&huart1, (uint8_t*) send_Tag_ble, SIZE_EARRING_SEND, 1000);
+					//			PRINTF("(%d) ", number_earrings);
+					//			for (int i = 0; i < SIZE_EARRING_SEND; i++)
+					//				PRINTF(" %x", send_Tag_ble[i]);
+								PRINTF("\n  %d",number_earrings);
+					send_flag = 0;
+				}
+			}
 
 #endif
 

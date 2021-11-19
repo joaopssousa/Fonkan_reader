@@ -172,6 +172,13 @@ void SysTick_Handler(void)
 void TIM2_IRQHandler(void)
 {
 	flags_ble.rfid_send_cmd = SET;
+	if(count_send_flag == 4)
+	{
+		send_flag = 1;
+		count_send_flag = 0;
+	}
+	count_send_flag++;
+
 
 	HAL_TIM_IRQHandler(&htim2);
 }
