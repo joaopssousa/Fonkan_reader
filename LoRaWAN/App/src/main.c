@@ -440,7 +440,7 @@ int main(void)
 					//			PRINTF("(%d) ", number_earrings);
 					//			for (int i = 0; i < SIZE_EARRING_SEND; i++)
 					//				PRINTF(" %x", send_Tag_ble[i]);
-								PRINTF("\n  %d",number_earrings);
+								PRINTF("\n %d ",number_earrings);
 					send_flag = 0;
 				}
 			}
@@ -454,7 +454,7 @@ int main(void)
 
 #ifdef USE_CHAFON_4_ANTENNAS
 
-			data_request_chafon(ANTENNA4);
+			data_request_chafon(ANTENNA1);
 			flags_ble.spare0 = SET;
 #endif
 
