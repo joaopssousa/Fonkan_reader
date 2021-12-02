@@ -412,9 +412,9 @@ int main(void)
 
 			hex_to_ascii(aciis_tag, earrings_TAG.N_TAG, EARRING_SIZE);
 			memcpy(&send_Tag_ble[EARRING_START_BYTE-1], aciis_tag, EARRING_SIZE*2);
-			send_Tag_ble[30] = 0xF0;
-			send_Tag_ble[31] = 0xF0;
-			send_Tag_ble[32] = 0xF0;
+			send_Tag_ble[30] = 0xA0;
+			send_Tag_ble[31] = 0xA0;
+			send_Tag_ble[32] = 0xA0;
 			send_Tag_ble[33] = 0xA0;
 			send_Tag_ble[34] = 0x0D;
 			flags_ble.tag = SET;
@@ -440,7 +440,7 @@ int main(void)
 					//			PRINTF("(%d) ", number_earrings);
 					//			for (int i = 0; i < SIZE_EARRING_SEND; i++)
 					//				PRINTF(" %x", send_Tag_ble[i]);
-								PRINTF("\n Send: %d \n",number_earrings);
+					//			PRINTF("\n Send: %d \n",number_earrings);
 					send_flag = 0;
 				}
 			}
