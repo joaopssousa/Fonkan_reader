@@ -21,7 +21,6 @@ OBJCOPY_BIN :=
 SUBDIRS := \
 Drivers/BSP/Components \
 Drivers/BSP/STM32F4xx_Nucleo \
-Drivers/BSP/X_NUCLEO_IKS01A2 \
 Drivers/BSP/sx1276mb1mas \
 Drivers/CMSIS \
 Drivers/FATFS \
@@ -30,7 +29,6 @@ Middlewares/FatFs \
 Middlewares/LoRaWAN/Crypto \
 Middlewares/LoRaWAN/Mac \
 Middlewares/LoRaWAN/Mac/Region \
-Middlewares/LoRaWAN/Patterns/Advanced \
 Middlewares/LoRaWAN/Patterns/Basic \
 Middlewares/LoRaWAN/Utilities \
 Projects/SW4STM32 \

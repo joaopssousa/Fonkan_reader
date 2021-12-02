@@ -12,7 +12,6 @@ RM := rm -rf
 -include Projects/subdir.mk
 -include Middlewares/LoRaWAN/Utilities/subdir.mk
 -include Middlewares/LoRaWAN/Patterns/Basic/subdir.mk
--include Middlewares/LoRaWAN/Patterns/Advanced/subdir.mk
 -include Middlewares/LoRaWAN/Mac/Region/subdir.mk
 -include Middlewares/LoRaWAN/Mac/subdir.mk
 -include Middlewares/LoRaWAN/Crypto/subdir.mk
@@ -21,7 +20,6 @@ RM := rm -rf
 -include Drivers/FATFS/subdir.mk
 -include Drivers/CMSIS/subdir.mk
 -include Drivers/BSP/sx1276mb1mas/subdir.mk
--include Drivers/BSP/X_NUCLEO_IKS01A2/subdir.mk
 -include Drivers/BSP/STM32F4xx_Nucleo/subdir.mk
 -include Drivers/BSP/Components/subdir.mk
 -include subdir.mk
