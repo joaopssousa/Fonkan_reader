@@ -405,6 +405,7 @@ int main(void)
 	if(communication_validation_flag)
 		 {
 			 data_Validation();
+			 flag_resend = 1;
 			 communication_validation_flag = 0;
 		 }
 	if(flags_ble.spare0 == SET){

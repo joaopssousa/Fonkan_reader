@@ -1,10 +1,10 @@
-main.c:578:6:LoraMacProcessNotify	0	static
-main.c:755:13:LORA_TxNeeded	0	static
-main.c:743:13:LORA_ConfirmClass	8	static
-main.c:584:13:LORA_HasJoined	0	static
-main.c:768:9:LORA_GetBatteryLevel	8	static
-main.c:723:13:OnTxTimerEvent	8	static
-main.c:669:13:LORA_RxData	8	static
+main.c:579:6:LoraMacProcessNotify	0	static
+main.c:756:13:LORA_TxNeeded	0	static
+main.c:744:13:LORA_ConfirmClass	8	static
+main.c:585:13:LORA_HasJoined	0	static
+main.c:769:9:LORA_GetBatteryLevel	8	static
+main.c:724:13:OnTxTimerEvent	8	static
+main.c:670:13:LORA_RxData	8	static
 main.c:222:5:size_list	32	static
 main.c:308:15:nibble_to_ascii	0	static
 main.c:317:5:hex_to_ascii	16	static

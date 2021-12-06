@@ -154,7 +154,7 @@ void SysTick_Handler(void) {
 
 void TIM2_IRQHandler(void) {
 	flags_ble.rfid_send_cmd = SET;
-	if (count_send_flag++ > -1) {
+	if ((count_send_flag++ > -1)  && (flag_resend == 1)){
 		send_flag = 1;
 		count_send_flag = 0;
 	}
@@ -275,15 +275,25 @@ void USART2_IRQHandler(void) {
 #ifdef USE_CHAFON_4_ANTENNAS
 
 	data[count_byte] = reciver_buffer[0];
+if(count_byte++ > data[0]){
+	if(data[0] == 0x11)
+	{
+		count_tags = count_byte;
+		count_byte = 0;
+		communication_validation_flag = 1;
+		flag_new_pack = 1;
 
-	if (count_byte == data[0]) {
+	}else
+	{
+		count_tags = count_byte;
+		count_byte = 0;
+		communication_validation_flag = 1;
+		flag_new_pack = 1;
+	}
 
-			flag_new_pack = 1;
-			communication_validation_flag = 1;
-			count_byte = 0;
+}
 
-		}else
-			count_byte++;
+
 
 //		if(count_byte > data[0])
 //		{
@@ -292,11 +302,9 @@ void USART2_IRQHandler(void) {
 //			flag_new_pack = 1;
 //		}
 
-
-
 	HAL_NVIC_ClearPendingIRQ(USART2_IRQn);
 	HAL_UART_Abort_IT(&huart2);
-	HAL_UART_Receive_IT(&huart2, reciver_buffer, 0x15);
+	HAL_UART_Receive_IT(&huart2, reciver_buffer, 1);
 
 #endif
 
