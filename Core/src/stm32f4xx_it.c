@@ -275,32 +275,32 @@ void USART2_IRQHandler(void) {
 #ifdef USE_CHAFON_4_ANTENNAS
 
 	data[count_byte] = reciver_buffer[0];
-if(count_byte++ > data[0]){
-	if(data[0] == 0x11)
-	{
-		count_tags = count_byte;
-		count_byte = 0;
-		communication_validation_flag = 1;
-		flag_new_pack = 1;
 
-	}else
-	{
-		count_tags = count_byte;
-		count_byte = 0;
-		communication_validation_flag = 1;
-		flag_new_pack = 1;
+	if (count_byte++ >= data[0]) {
+		if (data[0] == 0x11) {
+			count_tags = count_byte;
+			count_byte = 0;
+			communication_validation_flag = 1;
+			flag_new_pack = 1;
+
+		} else if (data[0] == 0x15 && data[count_byte - 8] == 0x07
+				&& data[count_byte - 7] == 0x00 && data[count_byte - 6] == 0x01
+				&& data[count_byte - 5] == 0x01 && data[count_byte - 4] == 0x01
+				&& data[count_byte - 3] == 0x00 && data[count_byte - 2] == 0x1e
+				&& data[count_byte - 1] == 0x4b
+				) {
+
+			count_tags = count_byte - 8 ;
+			count_byte = 0;
+			flag_resend = 1;
+			communication_validation_flag = 1;
+			flag_new_pack = 1;
+		}else if(data[0] == 0x07)
+		{
+			count_byte = 0;
+		}
+
 	}
-
-}
-
-
-
-//		if(count_byte > data[0])
-//		{
-//			count_byte = 0;
-//			communication_validation_flag = 1;
-//			flag_new_pack = 1;
-//		}
 
 	HAL_NVIC_ClearPendingIRQ(USART2_IRQn);
 	HAL_UART_Abort_IT(&huart2);
