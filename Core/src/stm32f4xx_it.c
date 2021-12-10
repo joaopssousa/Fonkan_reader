@@ -153,10 +153,12 @@ void SysTick_Handler(void) {
 }
 
 void TIM2_IRQHandler(void) {
-	flags_ble.rfid_send_cmd = SET;
-	if ((count_send_flag++ > -1)  && (flag_resend == 1)){
+
+	if ((flag_resend == 1)){
+		flags_ble.rfid_send_cmd = SET;//teste
 		send_flag = 1;
-		count_send_flag = 0;
+		count_send_flag = 0;//delete
+		flag_resend = 0;
 	}
 
 	HAL_TIM_IRQHandler(&htim2);
@@ -290,12 +292,12 @@ void USART2_IRQHandler(void) {
 				&& data[count_byte - 1] == 0x4b
 				) {
 
-			count_tags = count_byte - 8 ;
+			count_tags = count_byte - 8;
 			count_byte = 0;
 			flag_resend = 1;
 			communication_validation_flag = 1;
 			flag_new_pack = 1;
-		}else if(data[0] == 0x07)
+		}else if(data[0] == 0x07 )
 		{
 			count_byte = 0;
 		}

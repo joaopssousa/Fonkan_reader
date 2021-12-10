@@ -402,46 +402,43 @@ int main(void)
 	{
 #ifdef USE_CHAFON_4_ANTENNAS
 
-	if(communication_validation_flag)
-		 {
-			 data_Validation();
-			 flag_resend = 1;
-			 communication_validation_flag = 0;
-		 }
-	if(flags_ble.spare0 == SET){
-		if (get_Earrings(&earrings_TAG)) {
+			if (communication_validation_flag) {
+				data_Validation();
+				flag_resend = 1;
+				communication_validation_flag = 0;
+			}
+			if (flags_ble.spare0 == SET) {
 
-			hex_to_ascii(aciis_tag, earrings_TAG.N_TAG, EARRING_SIZE);
-			memcpy(&send_Tag_ble[EARRING_START_BYTE-1], aciis_tag, EARRING_SIZE*2);
-			send_Tag_ble[30] = 0xA0;
-			send_Tag_ble[31] = 0xA0;
-			send_Tag_ble[32] = 0xA0;
-			send_Tag_ble[33] = 0xA0;
-			send_Tag_ble[34] = 0x0D;
-			flags_ble.tag = SET;
-		} else
-			flags_ble.tag = RESET;
 
-		flags_ble.spare0 = RESET;
-	}
+				if (get_Earrings(&earrings_TAG)) {
 
-	if(flags_ble.confirm == SET )
-	{
-//		if(!get_Earrings(&earrings_TAG))
-//			flags_ble.tag = RESET;
-//
-		number_earrings++;
+					hex_to_ascii(aciis_tag, earrings_TAG.N_TAG, EARRING_SIZE);
+					memcpy(&send_Tag_ble[EARRING_START_BYTE - 1], aciis_tag,
+							EARRING_SIZE * 2);
+					send_Tag_ble[30] = 0xA0;
+					send_Tag_ble[31] = 0xA0;
+					send_Tag_ble[32] = 0xA0;
+					send_Tag_ble[33] = 0xA0;
+					send_Tag_ble[34] = 0x0D;
+					flags_ble.tag = SET;
+				} else
+					flags_ble.tag = RESET;
 
-		flags_ble.confirm = RESET;
-	}
+				flags_ble.spare0 = RESET;
+			}
+
+			if (flags_ble.confirm == SET) {
+				number_earrings++;
+				flags_ble.confirm = RESET;
+			}
 
 			if (flags_ble.tag == SET) {
 				if (send_flag) {
-					HAL_UART_Transmit(&huart1, (uint8_t*) send_Tag_ble, SIZE_EARRING_SEND, 1000);
-					//			PRINTF("(%d) ", number_earrings);
-					//			for (int i = 0; i < SIZE_EARRING_SEND; i++)
-					//				PRINTF(" %x", send_Tag_ble[i]);
-					//			PRINTF("\n Send: %d \n",number_earrings);
+					HAL_UART_Transmit(&huart1, (uint8_t*) send_Tag_ble,	SIZE_EARRING_SEND, 1000);
+					PRINTF("(%d) ", number_earrings);
+					for (int i = 0; i < SIZE_EARRING_SEND; i++)
+						PRINTF(" %x", send_Tag_ble[i]);
+					PRINTF("\n Send: %d \n", number_earrings);
 					send_flag = 0;
 				}
 			}
@@ -457,6 +454,7 @@ int main(void)
 
 			data_request_chafon(ANTENNA1);
 			flags_ble.spare0 = SET;
+
 #endif
 
 #ifdef USE_FONKAN_1_ANTENNA
