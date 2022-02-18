@@ -57,7 +57,7 @@ void vcom_Init(void (*TxCb)(void))
       - Hardware flow control disabled (RTS and CTS signals) */
   UartHandle.Instance        = USARTx;
 
-  UartHandle.Init.BaudRate   = 115200;
+  UartHandle.Init.BaudRate   = 230400;
   UartHandle.Init.WordLength = UART_WORDLENGTH_8B;
   UartHandle.Init.StopBits   = UART_STOPBITS_1;
   UartHandle.Init.Parity     = UART_PARITY_NONE;
@@ -301,7 +301,7 @@ void vcom_IoDeInit(void)
   * @param  None.
   * @retval HAL Status.
   */
-HAL_StatusTypeDef  COM_Init(void)
+HAL_StatusTypeDef COM_Init(void)
 {
 #if defined(__GNUC__)
   setvbuf(stdout, NULL, _IONBF, 0);

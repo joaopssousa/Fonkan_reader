@@ -52,7 +52,7 @@ _Bool flag_lora_joined = RESET;
 int8_t t = 0;
 uint8_t flag_send_to_lora = LORA_RESET;
 Model_TAG  tag_to_lora;
-Model_TAG pack_to_lora[10];
+Model_TAG pack_to_lora[500];
 
 // Tamanho e vetor de dados para usar a serial para testes.
 uint16_t size;
@@ -76,9 +76,9 @@ RTC_DateTypeDef currDate;
 uint8_t b = 0;
 
 
-_Bool delay_flag = RESET;
-char buffer_tag[50];
-#define LOG_FILE "STORE.TXT"
+//_Bool delay_flag = RESET;
+//char buffer_tag[50];
+//#define LOG_FILE "STORE.TXT"
 
 
 uint8_t pack_position = 0;
@@ -100,7 +100,7 @@ uint8_t pack_position = 0;
 /*!
  * Defines the application data transmission duty cycle. 5s, value in [ms].
  */
-#define APP_TX_DUTYCYCLE                            10000
+#define APP_TX_DUTYCYCLE                            60000
 /*!
  * LoRaWAN Adaptive Data Rate
  * @note Please note that when ADR is enabled the end-device should be static
@@ -171,11 +171,11 @@ static void LoraMacProcessNotify(void);
 
 
 /**** SD CArd Function prototypes *****/
-static void mount_sd_card();
-static void REMOVE_and_OPENAGAIN(const char* arq);
-static void VERIFY_OPEN(const char* arq);
-static void SAVE_ON_CARD();
-static void REMOVE_FROM_CARD();
+//static void mount_sd_card();
+//static void remove_and_openagain(const char* arq);
+//static void verify_open(const char* arq);
+//static void save_on_card();
+//static void remove_from_card();
 
 
 /* Private variables ---------------------------------------------------------*/
@@ -222,74 +222,74 @@ int size_list(FIL File){
 	return index;
 }
 
-static void mount_sd_card(){
-	if(f_mount(&SDFatFS, (const TCHAR *)&SDPath, 1) != FR_OK)
-	{
-		// TODO Acionar flag ou alerta de ausencia de cartão ou erro de montagem
-		PRINT_SD_CARD(PRINTF("Erro ao montar o cartao\r\n");)
-		// Error_Handler();
-	}
-}
+//static void mount_sd_card(){
+//	if(f_mount(&SDFatFS, (const TCHAR *)&SDPath, 1) != FR_OK)
+//	{
+//		// TODO Acionar flag ou alerta de ausencia de cartão ou erro de montagem
+//		PRINT_SD_CARD(PRINTF("Erro ao montar o cartao\r\n");)
+//		// Error_Handler();
+//	}
+//}
 
-static void REMOVE_and_OPENAGAIN(const char* arq){
+//static void remove_and_openagain(const char* arq){
+//
+//	res = f_unlink(arq);
+//	if(res == FR_LOCKED){
+//		f_close(&SDFile); 		// Fecha
+//		f_unlink(arq);			// Depois apaga
+//	}
+//	else if(res == FR_NO_FILE){
+//		return; 	// Não há nem arquivo existente com o nome informado
+//	}
+//
+//	if(f_open(&SDFile, arq, FA_OPEN_APPEND | FA_READ | FA_WRITE) != FR_OK)
+//	{
+//		// TODO Imprimir os erros e tratar na uart
+//	  Error_Handler();
+//	}
+//
+//	f_sync(&SDFile);
+//}
 
-	res = f_unlink(arq);
-	if(res == FR_LOCKED){
-		f_close(&SDFile); 		// Fecha
-		f_unlink(arq);			// Depois apaga
-	}
-	else if(res == FR_NO_FILE){
-		return; 	// Não há nem arquivo existente com o nome informado
-	}
-
-	if(f_open(&SDFile, arq, FA_OPEN_APPEND | FA_READ | FA_WRITE) != FR_OK)
-	{
-		// TODO Imprimir os erros e tratar na uart
-	  Error_Handler();
-	}
-
-	f_sync(&SDFile);
-}
-
-static void VERIFY_OPEN(const char* arq){
-	res = f_open(&SDFile, arq, FA_OPEN_APPEND | FA_READ | FA_WRITE) != FR_OK;
-	if(res == FR_OK){
-		PRINT_SD_CARD(PRINTF("FR_OK \n");)
-		return;
-	}
-	else if(res == FR_LOCKED){
-		PRINT_SD_CARD(PRINTF("FR_LOCKED \n");)
-		return;
-	}
-	else if(res == FR_DISK_ERR){
-		PRINT_SD_CARD(PRINTF("FR_DISK_ERR \n");)
-		Error_Handler();
-	}
-	else{
-		PRINT_SD_CARD(PRINTF("Error to open the log file on the SD Card \n Reset the board \n");)
-		Error_Handler();
-	}
-}
-
-static void SAVE_ON_CARD(){
-	delayed_store_flag++; 	// Contagem de TAGs atrasadas ao envio
-
-	// Se não há conexão entre o gateway, armazena no cartão SD para envio posterior
-	PRINT_SD_CARD(PRINTF("===> Escrita no cartao. Count = %d\r\n", delayed_store_flag);)
-	f_write(&SDFile, store_TAG[last_TAG].N_TAG, sizeof(store_TAG[last_TAG].N_TAG), (void *)&byteswritten);
-//	f_sync(&SDFile);	// Um ou outro
-	f_close(&SDFile);
-}
-
-static void REMOVE_FROM_CARD(){
-	// Remove do cartão SD e armazena estrutura para envio da Lora
-	//TODO Generalizar a função colocando um argumento para receber o dado que estava no cartão
-
-	f_gets(buffer_tag, bytesread, &SDFile);
-	memcpy(tag_to_lora.N_TAG, buffer_tag, sizeof(buffer_tag));
-	delayed_store_flag--;
-	PRINT_SD_CARD(PRINTF("===> Removida do cartão. Count = %d\r\n", delayed_store_flag);)
-}
+//static void verify_open(const char* arq){
+//	res = f_open(&SDFile, arq, FA_OPEN_APPEND | FA_READ | FA_WRITE) != FR_OK;
+//	if(res == FR_OK){
+//		PRINT_SD_CARD(PRINTF("FR_OK \n");)
+//		return;
+//	}
+//	else if(res == FR_LOCKED){
+//		PRINT_SD_CARD(PRINTF("FR_LOCKED \n");)
+//		return;
+//	}
+//	else if(res == FR_DISK_ERR){
+//		PRINT_SD_CARD(PRINTF("FR_DISK_ERR \n");)
+//		Error_Handler();
+//	}
+//	else{
+//		PRINT_SD_CARD(PRINTF("Error to open the log file on the SD Card \n Reset the board \n");)
+//		Error_Handler();
+//	}
+//}
+//
+//static void save_on_card(){
+//	delayed_store_flag++; 	// Contagem de TAGs atrasadas ao envio
+//
+//	// Se não há conexão entre o gateway, armazena no cartão SD para envio posterior
+//	PRINT_SD_CARD(PRINTF("===> Escrita no cartao. Count = %d\r\n", delayed_store_flag);)
+//	f_write(&SDFile, store_TAG[last_TAG].N_TAG, sizeof(store_TAG[last_TAG].N_TAG), (void *)&byteswritten);
+////	f_sync(&SDFile);	// Um ou outro
+//	f_close(&SDFile);
+//}
+//
+//static void remove_from_card(){
+//	// Remove do cartão SD e armazena estrutura para envio da Lora
+//	//TODO Generalizar a função colocando um argumento para receber o dado que estava no cartão
+//
+//	f_gets(buffer_tag, bytesread, &SDFile);
+//	memcpy(tag_to_lora.N_TAG, buffer_tag, sizeof(buffer_tag));
+//	delayed_store_flag--;
+//	PRINT_SD_CARD(PRINTF("===> Removida do cartão. Count = %d\r\n", delayed_store_flag);)
+//}
 
 /************* End of Sd card functions *****************/
 
@@ -316,7 +316,7 @@ int main(void)
   HW_Init();
 
   // Mount and prepare SD Card
-  mount_sd_card();
+  //mount_sd_card();
 
   /*Disbale Stand-by mode*/
   LPM_SetOffMode(LPM_APPLI_Id, LPM_Disable);
@@ -340,11 +340,13 @@ int main(void)
   while (1)
   {
 
+	// Handler do bluetooth.
 	if (flags_ble.enable_handler){
 		flags_ble.enable_handler = 0;
-		ble_handler((uint8_t*)&message_ble);					// Aciona o handler para selecionar a mensagem de resposta.
+		ble_handler((uint8_t*)&message_ble);
 	}
 
+	//Update mode
 	if (flags_ble.update_mode){
 
 		//prim = __get_PRIMASK();
@@ -357,7 +359,9 @@ int main(void)
 		COM_Init();
 		HAL_Delay(1);
 		COM_Flush();
+		//init_update();
 		FW_UPDATE_Run();
+
 		MX_USART1_UART_Init();
 		HAL_UART_Receive_IT(&huart1, rx_byte_uart1, 1);
 	}
@@ -368,27 +372,31 @@ int main(void)
 		//Envia Comando de leitura de brinco
 		if(flags_ble.rfid_send_cmd == SET){
 			flags_ble.rfid_send_cmd = RESET;
-			HAL_UART_Transmit(&huart2, (uint8_t *)READ_MULTIPLE_TAG, MSG_MULTI_TAG_SIZE, 50);
+			read_earrings();
 		}
 
-
+		//Se recebeu pacote válido do leitor de brinco
 		if(flags_ble.tag == SET)
 		{
 			if(bytes_read_rfid>4)
-				b  = message_handler((uint8_t*)&message, bytes_read_rfid);
+				b = message_handler((uint8_t*)&message, bytes_read_rfid);
 			flags_ble.tag = RESET;
 		}
 
 		if (last_TAG >= 0)
 		{
 			// Variavel auxiliar para fazer envios sequenciais das TAGs sem mexer no indice original
-			PRINTF("====> indices: IN: %d LS: %d\r\n", in_use_TAG, last_TAG);
 
 			if ( (in_use_TAG<0) || (last_TAG == 0) )
 			{
 				in_use_TAG=0;
 			}
+			if (in_use_TAG>last_TAG)
+			{
+				in_use_TAG = last_TAG;
+			}
 
+#if DISABLE_LORA == 0
 			if ( pack_position < 0 || last_TAG == 0)
 			{
 				pack_position=0;
@@ -399,11 +407,21 @@ int main(void)
 				pack_position = last_TAG;
 			}
 
-			if (in_use_TAG>last_TAG)
+			//Coloca tag no buffer de envio via lora
+			if (pack_position < last_TAG)
 			{
-				in_use_TAG = last_TAG;
+				flag_send_to_lora++;
+				PRINTF("NewTag to lora \n\r", pack_position);
+			//	count_send_to_lora = 0;
+				//No máximo 10 brincos podem ser armazenados
+				if(pack_position >= 10)
+					pack_position=0;
+				memcpy(pack_to_lora[pack_position++].N_TAG, store_TAG[last_TAG].N_TAG, TAG_SIZE);
 			}
-
+			else{
+				pack_position=0;
+			}
+#endif
 			// 	Envio ao app via bluetooth
 			if(in_use_TAG>=0)
 			{
@@ -416,39 +434,45 @@ int main(void)
 //				}
 //				PRINTF("\r\n");
 //################################
-
-				if(flags_ble.connection)
-				{
-					HAL_UART_Transmit(&huart1, (uint8_t*) store_TAG[in_use_TAG].N_TAG, TAG_SIZE-1, 1000);
-					HAL_Delay(TIMEOUT_BETWEEN_RESEND_TAG);
+				if (flags_ble.wait_for_response==SET){
+					if (flags_ble.confirm == SET)
+					{
+						count_confirm=0;
+						flags_ble.wait_for_response=RESET;
+						flags_ble.confirm = RESET;
+						PRINTF("====> indices: IN: %d LS: %d\r\n", in_use_TAG, last_TAG);
+						if ((in_use_TAG<last_TAG))
+						{
+							PRINTF("NewTag to bluetooth \n\r");
+							in_use_TAG++;
+						}
+						else if ((in_use_TAG>=last_TAG))
+						{
+							PRINTF("Limpa Fila \n\r");
+							in_use_TAG=-1;
+							clear_buffers();
+						}
+					}
+					else
+					{
+						count_confirm++;
+					}
 				}
 
-				if (pack_position < last_TAG)
+				if(flags_ble.connection == SET)
 				{
-					flag_send_to_lora++;
-					if(pack_position >= 10)
-						pack_position=0;
-					memcpy(pack_to_lora[pack_position++].N_TAG, store_TAG[last_TAG].N_TAG, TAG_SIZE);
-				}
-
-				if ((in_use_TAG<last_TAG) && (flags_ble.confirm == SET))
-				{
-					flags_ble.confirm = RESET;
-					PRINTF("NewTag to bluetooth \n\r", pack_position);
-					in_use_TAG++;
-				}
-				else if (in_use_TAG>=last_TAG)
-				{
-					PRINTF("FilaVazia \n\r");
-					clear_buffers();
+					PRINTF("Transmiting to bluetooth \n\r");
+//					HAL_UART_Transmit(&huart1, (uint8_t*) store_TAG[in_use_TAG].N_TAG, TAG_SIZE-1, 1000);
+					if(in_use_TAG>=0)
+					{
+						transmit_to_ble();
+						flags_ble.wait_for_response=SET;
+						HAL_Delay(TIMEOUT_BETWEEN_RESEND_TAG);
+					}
 				}
 
 			}
 
-
-//			PRINTF("Flag_send_to_lora = %d", flag_send_to_lora);
-//			flag_confirm = RESET;
-			//Send(NULL);
 		}
 //		else
 //		{
@@ -462,18 +486,12 @@ int main(void)
 
 
 #define form1
-	if (flag_send_timeout == SET)
+
+	if (AppProcessRequest == LORA_SET)
 	{
-		flag_send_timeout = RESET;
-		if (AppProcessRequest == LORA_SET)
-		{
-			AppProcessRequest = LORA_RESET;
-			if(flag_send_to_lora > 0 ){
-				flag_send_to_lora--;
-			//	Send(NULL);
-				PRINTF("\n Envio pelo tempo configurado \n");
-			}
-		}
+		AppProcessRequest = LORA_RESET;
+
+		Send(NULL);
 	}
 
     if (LoraMacProcessRequest == LORA_SET)
@@ -513,24 +531,23 @@ static void LORA_HasJoined(void)
 #ifdef form1
 static void Send(void *context)
 {
+	HAL_TIM_Base_Stop_IT(&htim2);
 	if (LORA_JoinStatus() != LORA_SET)
 	{
 		/*Not joined, try again later*/
 		LORA_Join();
 
 		flag_lora_joined = RESET;
-		SAVE_ON_CARD();
+	//	save_on_card();
 		return;
 	}
 
 	if (delayed_store_flag > 0){
 		delayed_store_flag--;
-		REMOVE_FROM_CARD();
+	//	remove_from_card();
 	}
 
 	flag_lora_joined = SET;
-
-	TVL1(PRINTF("SEND REQUEST\n\r");) //Aqui
 
 	AppData.Port = LORAWAN_APP_PORT;
 
@@ -538,16 +555,22 @@ static void Send(void *context)
 	AppData.BuffSize = sizeof(Model_TAG);
 	//memcpy(AppData.Buff,&tag_to_lora,sizeof(Model_TAG));
 
-	if(pack_position > 0){
-		memcpy(AppData.Buff, &pack_to_lora[--pack_position], sizeof(Model_TAG));
+	if (flag_send_timeout == SET)
+	{
+		flag_send_timeout = RESET;
+//		if(flag_send_to_lora > 0 ){
+//					flag_send_to_lora--;
+		if(pack_position > 0){
+			memcpy(AppData.Buff, &pack_to_lora[--pack_position], sizeof(Model_TAG));
+		}
+		else{
+			char none_msg[] = "!VAZIO!";
+			memcpy(AppData.Buff, &none_msg, sizeof(none_msg));
+		}
+		PRINTF("\n Pack_position = %d \n\r", pack_position);
 	}
-	else{
-		char none_msg[] = "1111111111";
-		memcpy(AppData.Buff, &none_msg, sizeof(none_msg));
-	}
-	PRINTF("\n Pack_position = %d \n\r", pack_position);
 
-	HAL_TIM_Base_Stop_IT(&htim2);
+
 	LORA_send(&AppData, LORAWAN_DEFAULT_CONFIRM_MSG_STATE);
 	HAL_TIM_Base_Start_IT(&htim2);
 
@@ -563,13 +586,13 @@ static void Send(void *context)
 		LORA_Join();
 
 		flag_lora_joined = RESET;
-		SAVE_ON_CARD();
+		save_on_card();
 		return;
 	}
 
 	if (delayed_store_flag > 0){
 		delayed_store_flag--;
-		REMOVE_FROM_CARD();
+		remove_from_card();
 	}
 
 	flag_lora_joined = SET;

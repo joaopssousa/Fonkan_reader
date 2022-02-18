@@ -332,11 +332,6 @@
 			<locationURI>PARENT-4-PROJECT_LOC/Drivers/BSP/Components/batteryMonitor/battery_monitor.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/Components/bmp280.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/Drivers/BSP/Components/station/bmp280.c</locationURI>
-		</link>
-		<link>
 			<name>Drivers/BSP/Components/handlers.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Drivers/BSP/Components/fonkan/handlers.c</locationURI>
@@ -365,26 +360,6 @@
 			<name>Drivers/BSP/STM32F4xx_Nucleo/stm32f4xx_nucleo.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Drivers/BSP/STM32F4xx_Nucleo/stm32f4xx_nucleo.c</locationURI>
-		</link>
-		<link>
-			<name>Drivers/BSP/X_NUCLEO_IKS01A2/x_nucleo_iks01a2.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/Drivers/BSP/X_NUCLEO_IKS01A2/x_nucleo_iks01a2.c</locationURI>
-		</link>
-		<link>
-			<name>Drivers/BSP/X_NUCLEO_IKS01A2/x_nucleo_iks01a2_humidity.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/Drivers/BSP/X_NUCLEO_IKS01A2/x_nucleo_iks01a2_humidity.c</locationURI>
-		</link>
-		<link>
-			<name>Drivers/BSP/X_NUCLEO_IKS01A2/x_nucleo_iks01a2_pressure.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/Drivers/BSP/X_NUCLEO_IKS01A2/x_nucleo_iks01a2_pressure.c</locationURI>
-		</link>
-		<link>
-			<name>Drivers/BSP/X_NUCLEO_IKS01A2/x_nucleo_iks01a2_temperature.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/Drivers/BSP/X_NUCLEO_IKS01A2/x_nucleo_iks01a2_temperature.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/sx1276mb1mas/sx1276mb1mas.c</name>

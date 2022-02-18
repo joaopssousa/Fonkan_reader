@@ -31,7 +31,6 @@ I2C_HandleTypeDef hi2c1;
 /* I2C1 init function */
 void HW_I2C1_Init(void)
 {
-
 //  hi2c1.Instance = I2C1;
 //  //hi2c1.Init.Timing = 0x10909CEC;
 //  hi2c1.Init.OwnAddress1 = 0;

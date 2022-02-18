@@ -4,7 +4,13 @@
 
 #define MAJOR_FIRMWARE_VERSION 0x01
 #define MINOR_FIRMWARE_VERSION 0x00
-#define PATCH_FIRMWARE_VERSION 0x04
+#define PATCH_FIRMWARE_VERSION 0x07
+
+#ifdef TEST
+#define PREFIX 0xFF
+#else
+#define PREFIX 0x00
+#endif
 
 /*
 * Device Type List
@@ -13,11 +19,7 @@
 * Portal 0x03
 * Eletrificador 0x04
 */
-
-#define WEATHERSTATION 0x01
-#define CURRAL 		   0x02
-#define PORTAL		   0x03
-#define ELETRIFICADOR  0x04
+#define CURRAL 0x02
 
 #define DEVICE_TYPE CURRAL
 

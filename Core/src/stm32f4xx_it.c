@@ -46,8 +46,6 @@ extern SD_HandleTypeDef hsd;
 
 extern unsigned char flag_connection;
 
-extern int count_send;
-
 
 /** @addtogroup SPI_FullDuplex_ComPolling
   * @{
@@ -188,34 +186,46 @@ void TIM3_IRQHandler(void)
 	 * 	o pino de estado se manteve em alta e conexão foi bem sucedida.
 	 */
 
-	ble_state = HAL_GPIO_ReadPin(BLE_STATE_GPIO_Port,BLE_STATE_Pin);
-	if (ble_state == 1)
-	{
-		if (++count_tim3 > 9)
-		{
-			flags_ble.connection = SET;
-			count_tim3 = 0;
-		}
-	}
-	else
-	{
+//	ble_state = HAL_GPIO_ReadPin(BLE_STATE_GPIO_Port,BLE_STATE_Pin);
+//	if (ble_state == 1)
+//	{
+//		if (++count_tim3 > 9)
+//		{
+//			flags_ble.connection = SET;
+//			count_tim3 = 0;
+//		}
+//	}
+//	else
+//	{
+//		flags_ble.connection = RESET;
+//		count_tim3 = 0;
+//	}
+
+	if(count_confirm > RETRIES_BEFORE_DISCONNECT)
 		flags_ble.connection = RESET;
-		count_tim3 = 0;
-	}
+//	if (flags_ble.wait_for_response == SET){
+//		if (++count_tim3 > 9)
+//		{
+//			flags_ble.connection = RESET;
+//			count_tim3 = 0;
+//		}
+//	}
+//	else
+//		count_tim3 = 0;
 
 	// Para as requisições de TAG pois a conexão foi quebrada
-	if(flags_ble.connection == RESET)
-	{
-			HAL_TIM_Base_Stop_IT(&htim2);
-	}
+//	if(flags_ble.connection == RESET)
+//	{
+//			HAL_TIM_Base_Stop_IT(&htim2);
+//	}
 
 	if(flags_ble.start == SET){
 		//Flag count to send data via lora
-		if(count_send++ == 50)
-		{
+		//if(count_send_to_lora++ == 50)
+		//{
 			flag_send_timeout = SET;
-			count_send = 0;
-		}
+		//	count_send_to_lora = 0;
+		//}
 	}
 
 

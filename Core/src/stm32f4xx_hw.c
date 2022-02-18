@@ -196,50 +196,25 @@ void HW_GpioInit(void)
 	  __HAL_RCC_GPIOB_CLK_ENABLE();
 	  __HAL_RCC_GPIOD_CLK_ENABLE();
 
-	  /*Configure GPIO pin Output Level */
-	  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_6, GPIO_PIN_RESET);
-
-	  /*Configure GPIO pin Output Level */
 	  HAL_GPIO_WritePin(LORA_RESET_GPIO_Port, LORA_RESET_Pin, GPIO_PIN_RESET);
 
-	  /*Configure GPIO pin Output Level */
 	  HAL_GPIO_WritePin(MEM_WP_GPIO_Port, MEM_WP_Pin, GPIO_PIN_SET);
 
-	  /*Configure GPIO pin Output Level */
-	  //HAL_GPIO_WritePin(GPIOB, LED_PLUVIOMETRO_Pin|LED_ANEMOMETRO_Pin, GPIO_PIN_RESET);
-
-	  /*Configure GPIO pin : USER_BUTTON_Pin */
 	  GPIO_InitStruct.Pin = USER_BUTTON_Pin;
 	  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
 	  GPIO_InitStruct.Pull = GPIO_PULLUP;
 	  HAL_GPIO_Init(USER_BUTTON_GPIO_Port, &GPIO_InitStruct);
 
-//	  /*Configure GPIO pin : PE6 */
-//	  GPIO_InitStruct.Pin = GPIO_PIN_6;
-//	  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-//	  GPIO_InitStruct.Pull = GPIO_NOPULL;
-//	  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-//	  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-//
-//	  /*Configure GPIO pin : LORA_DIO5_Pin */
-//	  GPIO_InitStruct.Pin = LORA_DIO5_Pin;
-//	  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-//	  GPIO_InitStruct.Pull = GPIO_NOPULL;
-//	  HAL_GPIO_Init(LORA_DIO5_GPIO_Port, &GPIO_InitStruct);
-
-	  /*Configure GPIO pin : PtPin */
       GPIO_InitStruct.Pin = ANEMOMETRO_Pin;
       GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
       GPIO_InitStruct.Pull = GPIO_PULLUP;
       HAL_GPIO_Init(ANEMOMETRO_GPIO_Port, &GPIO_InitStruct);
 
-      /*Configure GPIO pin : PtPin */
       GPIO_InitStruct.Pin = PLUVIOMETRO_Pin;
       GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
       GPIO_InitStruct.Pull = GPIO_PULLDOWN;
       HAL_GPIO_Init(PLUVIOMETRO_GPIO_Port, &GPIO_InitStruct);
 
-	  /*Configure GPIO pins : LORA_RESET_Pin MEM_WP_Pin */
 	  GPIO_InitStruct.Pin = LORA_RESET_Pin|MEM_WP_Pin;
 	  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	  GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -261,6 +236,7 @@ void HW_GpioInit(void)
 	  /* DMA2_Stream3_IRQn interrupt configuration */
 	  HAL_NVIC_SetPriority(DMA2_Stream3_IRQn, 0, 0);
 	  HAL_NVIC_EnableIRQ(DMA2_Stream3_IRQn);
+
 	  /* DMA2_Stream6_IRQn interrupt configuration */
 	  HAL_NVIC_SetPriority(DMA2_Stream6_IRQn, 0, 0);
 	  HAL_NVIC_EnableIRQ(DMA2_Stream6_IRQn);
@@ -270,6 +246,7 @@ void HW_GpioInit(void)
 	  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 }
+
 /**
   * @brief  System Clock Configuration
   *         The system Clock is configured as follows :
@@ -289,9 +266,6 @@ void HW_GpioInit(void)
   * @param  None
   * @retval None
   */
-
-
-
 void SystemClock_Config(void)
 {
 	RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
@@ -302,7 +276,7 @@ void SystemClock_Config(void)
 	 */
 	__HAL_RCC_PWR_CLK_ENABLE();
 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-	/** Initializes the RCC Oscillators according to the specified parameterstraduto
+	/** Initializes the RCC Oscillators according to the specified parameters
 	 * in the RCC_OscInitTypeDef structure.
 	 */
 	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_LSI;
@@ -342,6 +316,7 @@ void SystemClock_Config(void)
 	}
 
 }
+
 /**
   * @brief This function return a random seed
   * @note based on the device unique ID
@@ -404,6 +379,7 @@ uint16_t HW_GetTemperatureLevel(void)
 
   return (uint16_t) temperatureDegreeC;
 }
+
 /**
   * @brief This function return the battery level
   * @param none
@@ -435,42 +411,11 @@ uint16_t HW_GetBatteryLevel(void)
   */
 void HW_AdcInit(void)
 {
-//  ADC_MultiModeTypeDef multimode = {0};
+
   ADC_ChannelConfTypeDef sConfig = {0};
   if (AdcInitialized == false)
   {
     AdcInitialized = true;
-
-//	hadc.Instance = ADC1;
-//	hadc.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
-//	hadc.Init.Resolution = ADC_RESOLUTION_12B;
-//	hadc.Init.ScanConvMode = DISABLE;
-//	hadc.Init.ContinuousConvMode = DISABLE;
-//	hadc.Init.DiscontinuousConvMode = DISABLE;
-//	hadc.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-//	hadc.Init.ExternalTrigConv = ADC_SOFTWARE_START;
-//	hadc.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-//	hadc.Init.NbrOfConversion = 1;
-//	hadc.Init.DMAContinuousRequests = DISABLE;
-//	hadc.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
-//	 ADCCLK_ENABLE();
-//	if (HAL_ADC_Init(&hadc) != HAL_OK)
-//	{
-//		Error_Handler();
-//	}
-
-//	/** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-//	*/
-//	sConfig.Channel = ADC_CHANNEL_14;
-//	sConfig.Rank = 1;
-//	sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
-//	sConfig.Offset = 0;
-//	if (HAL_ADC_ConfigChannel(&hadc, &sConfig) != HAL_OK)
-//	{
-//		Error_Handler();
-//	}
-
-	///////////////////////////////////////////////////////////////////////////
 
 	  /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
 	  */
@@ -502,6 +447,7 @@ void HW_AdcInit(void)
 
   }
 }
+
 /**
   * @brief This function De-initializes the ADC
   * @param none
