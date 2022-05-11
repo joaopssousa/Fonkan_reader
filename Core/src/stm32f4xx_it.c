@@ -295,7 +295,7 @@ void USART2_IRQHandler(void) {
 			flag_resend = 1;
 			communication_validation_flag = 1;
 			flag_new_pack = 1;
-		}else if(data[0] == 0x07)
+		}else if(data[0] == 0x07 || count_byte >= 450)
 		{
 			count_byte = 0;
 		}
